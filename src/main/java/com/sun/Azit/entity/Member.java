@@ -3,28 +3,22 @@ package com.sun.Azit.entity;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.util.Objects;
 
-
 import com.sun.Azit.constant.Role;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 
 @Getter
 @ToString
 @Table(name="member")
-@EntityListeners(AuditingEntityListener.class)
 @Entity
 public class Member extends BaseTimeEntity{
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY) private Long id;
+    @Id @Column(name="member_id") @GeneratedValue(strategy = GenerationType.IDENTITY) private Long id;
     @Setter @Column(nullable = false, length = 20) private String name;
     @Setter @Column(nullable = false, unique = true) private String email;
     @Setter @Column(nullable = false) private String password;
-
     @Setter @Enumerated(EnumType.STRING) private Role role;
 
 
