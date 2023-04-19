@@ -8,6 +8,7 @@ import javax.persistence.*;
 import java.util.Objects;
 
 import com.sun.Azit.constant.Role;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 
 @Getter
@@ -15,13 +16,15 @@ import com.sun.Azit.constant.Role;
 @Table(name="member")
 @Entity
 public class Member extends BaseTimeEntity{
-    @Id @Column(name="member_id") @GeneratedValue(strategy = GenerationType.IDENTITY) private Long id;
+    @Id @Column() @GeneratedValue(strategy = GenerationType.IDENTITY) private Long id;
     @Setter @Column(nullable = false, length = 20) private String name;
     @Setter @Column(nullable = false, unique = true) private String email;
     @Setter @Column(nullable = false) private String password;
     @Setter @Enumerated(EnumType.STRING) private Role role;
 
+    public Member(){
 
+    }
     protected Member(String name, String email, String password, Role role) {
         this.name = name;
         this.email = email;

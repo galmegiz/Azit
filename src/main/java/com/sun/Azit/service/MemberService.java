@@ -20,7 +20,6 @@ public class MemberService {
         return memberRepository.save(member);
     }
 
-
     private void validateDuplicateMember(Member member){
         memberRepository.findByEmail(member.getEmail())
                 .ifPresent(m -> {
