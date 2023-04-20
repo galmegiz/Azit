@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layouts/defaultLayout}">
+<th:block layout:fragment="css">
+  <style>
+            .fieldError {
+                color: #bd2130;
+            }
+        </style>
+</th:block>
+<th:block layout:fragment="script">
+  <script th:inline="javascript">
+            $(document).ready(function(){
+                var errorMessage = [[${errorMessage}]];
+                if(errorMessage != null){
+                    alert(errorMessage);
+                }
+            })
+        </script>
+</th:block>
+
+
+<th:block layout:fragment="content">
+  <div class="container py-5">
+    <form action="/events/create" role="form" method="post" th:object="${eventFormDto}">
+      <div class="mb-3 form-group">
+        <label th:for="title" class="form-label">제목</label>
+        <input type="text" th:field="*{title}" class="form-control" id="title" placeholder="">
+        <p th:if="${#fields.hasErrors('title')}" th:errors="*{title}" class="fieldError">입력값이 잘못됐습니다.</p>
+      </div>
+      <div class="mb-3 form-group">
+        <label th:for="titleTag" class="form-label">제목태그</label>
+        <input type="text" th:field="*{titleTag}" class="form-control" id="titleTag" placeholder="">
+        <p th:if="${#fields.hasErrors('titleTag')}" th:errors="*{titleTag}" class="fieldError">입력값이 잘못됐습니다.</p>
+      </div>
+      <div class="mb-3 form-group">
+        <label th:for="recruitDeadline" class="form-label">모집마감일</label>
+        <input type="datetime" th:field="*{recruitDeadline}" class="form-control" id="recruitDeadline" placeholder="">
+        <p th:if="${#fields.hasErrors('recruitDeadline')}" th:errors="*{recruitDeadline}" class="fieldError">입력값이 잘못됐습니다.</p>
+      </div>
+      <div class="mb-3 form-group">
+        <label th:for="fee" class="form-label">금액</label>
+        <input type="number" th:field="*{fee}" class="form-control" id="fee" placeholder="">
+        <p th:if="${#fields.hasErrors('fee')}" th:errors="*{fee}" class="fieldError">입력값이 잘못됐습니다.</p>
+      </div>
+      <div class="mb-3 form-group">
+        <label th:for="peopleLimit" class="form-label">인원수</label>
+        <input type="number" th:field="*{peopleLimit}" class="form-control" id="peopleLimit" placeholder="">
+        <p th:if="${#fields.hasErrors('peopleLimit')}" th:errors="*{peopleLimit}" class="fieldError">입력값이 잘못됐습니다.</p>
+      </div>
+      <div class="mb-3 form-group">
+        <label th:for="peopleLimit" class="form-label">요약</label>
+        <input type="text" th:field="*{summary}" class="form-control" id="summary" placeholder="">
+        <p th:if="${#fields.hasErrors('summary')}" th:errors="*{summary}" class="fieldError">입력값이 잘못됐습니다.</p>
+      </div>
+      <div class="mb-3 form-group">
+        <label th:for="content" class="form-label">내용</label>
+        <input type="text" th:field="*{content}" class="form-control" id="content" placeholder="">
+        <p th:if="${#fields.hasErrors('content')}" th:errors="*{content}" class="fieldError">입력값이 잘못됐습니다.</p>
+      </div>
+      <div class="mb-3 form-group">
+        <label th:for="hashTag" class="form-label">해시태그</label>
+        <input type="text" th:field="*{hashTag}" class="form-control" id="hashTag" placeholder="">
+        <p th:if="${#fields.hasErrors('hashTag')}" th:errors="*{hashTag}" class="fieldError">입력값이 잘못됐습니다.</p>
+      </div>
+      <div class="mb-3 form-group">
+        <label th:for="startDate" class="form-label">시작일</label>
+        <input type="datetime" th:field="*{startDate}" class="form-control" id="startDate" placeholder="">
+        <p th:if="${#fields.hasErrors('startDate')}" th:errors="*{startDate}" class="fieldError">입력값이 잘못됐습니다.</p>
+      </div>
+      <div class="mb-3 form-group">
+        <label th:for="endDate" class="form-label">종료일</label>
+        <input type="datetime" th:field="*{endDate}" class="form-control" id="endDate" placeholder="">
+        <p th:if="${#fields.hasErrors('endDate')}" th:errors="*{endDate}" class="fieldError">입력값이 잘못됐습니다.</p>
+      </div>
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+  </div>
+</th:block>>
+</html>

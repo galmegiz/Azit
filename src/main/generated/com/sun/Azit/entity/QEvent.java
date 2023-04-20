@@ -19,13 +19,14 @@ public class QEvent extends EntityPathBase<Event> {
 
     public static final QEvent event = new QEvent("event");
 
+    public final QBaseTimeEntity _super = new QBaseTimeEntity(this);
+
     public final StringPath content = createString("content");
 
-    public final DateTimePath<java.time.LocalDateTime> createdAt = createDateTime("createdAt", java.time.LocalDateTime.class);
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
-    public final StringPath createdBy = createString("createdBy");
-
-    public final DatePath<java.time.LocalDate> end = createDate("end", java.time.LocalDate.class);
+    public final DateTimePath<java.time.LocalDateTime> endDate = createDateTime("endDate", java.time.LocalDateTime.class);
 
     public final NumberPath<Integer> fee = createNumber("fee", Integer.class);
 
@@ -33,15 +34,11 @@ public class QEvent extends EntityPathBase<Event> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final DateTimePath<java.time.LocalDateTime> modifiedAt = createDateTime("modifiedAt", java.time.LocalDateTime.class);
-
-    public final StringPath modifiedBy = createString("modifiedBy");
-
     public final NumberPath<Integer> peopleLimit = createNumber("peopleLimit", Integer.class);
 
-    public final DatePath<java.time.LocalDate> recruitDeadline = createDate("recruitDeadline", java.time.LocalDate.class);
+    public final DateTimePath<java.time.LocalDateTime> recruitDeadline = createDateTime("recruitDeadline", java.time.LocalDateTime.class);
 
-    public final DatePath<java.time.LocalDate> start = createDate("start", java.time.LocalDate.class);
+    public final DateTimePath<java.time.LocalDateTime> startDate = createDateTime("startDate", java.time.LocalDateTime.class);
 
     public final EnumPath<com.sun.Azit.constant.Estatus> status = createEnum("status", com.sun.Azit.constant.Estatus.class);
 
@@ -50,6 +47,9 @@ public class QEvent extends EntityPathBase<Event> {
     public final StringPath title = createString("title");
 
     public final StringPath titleTag = createString("titleTag");
+
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> updateTime = _super.updateTime;
 
     public QEvent(String variable) {
         super(Event.class, forVariable(variable));

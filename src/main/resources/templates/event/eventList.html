@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layouts/defaultLayout}">
+
+
+
+<th:block layout:fragment="content">
+  <div class="container py-5">
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+          <th:block th:each="event:${events}">
+            <div class="col">
+              <div class="card shadow-sm">
+                <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#55595c"></rect><text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text></svg>
+
+                <div class="card-body">
+                  <p class="card-text" th:text="${event.title}">test</p>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div class="btn-group">
+                      <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
+                      <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                    </div>
+                    <small class="text-muted" th:text="${event.status}">9 mins</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </th:block>
+    </div>
+  </div>
+  <nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-center">
+      <li class="page-item">
+        <a class="page-link" th:href="@{/events/(page=0)}" aria-label="Previous">
+          <span aria-hidden="true">&laquo;</span>
+        </a>
+      </li>
+      <li class="page-item"
+          th:class="'page-item ' + (${currentPage} <= 0? 'disabled' : '' )">
+        <a class="page-link"
+           th:href="@{/events(page=${currentPage - 1})}"
+           aria-label="Next">
+          <span aria-hidden="true">&lsaquo;</span>
+        </a>
+      </li>
+      <th:block th:each="page : ${#numbers.sequence(startPage, endPage - 1)}">
+          <li class="page-item">
+            <a class="page-link"
+               th:if="${page != currentPage}"
+               th:href="@{events(page=${page})}"
+               th:text="${page + 1}">
+            </a>
+          </li>
+          <li class="page-item active">
+            <span class="page-link"
+                  th:if="${page == currentPage}"
+                  th:text="${page + 1}"></span>
+          </li>
+      </th:block>
+      <li class="page-item"
+          th:class="'page-item ' + (${events.last} == true? 'disabled' : '' )">
+        <a class="page-link"
+           th:href="@{/events(page=${currentPage + 1})}"
+           aria-label="Next">
+          <span aria-hidden="true">&rsaquo;</span>
+        </a>
+      </li>
+      <li class="page-item">
+        <a class="page-link"
+           th:href="@{/events(page=${events.totalPages - 1})}" aria-label="Next">
+          <span aria-hidden="true">&raquo;</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+</th:block>>
+</html>
