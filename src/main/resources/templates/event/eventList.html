@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layouts/defaultLayout}">
+
+<th: block layout:fragment="css">
+  <style>
+    .my-card{
+      padding:45px 30px;
+    }
+  </style>
+</th:>
+
+<th:block layout:fragment="content">
+  <section class="py-5 text-center container">
+    <div class="row py-lg-5">
+      <p> albaum </p>
+    </div>
+  </section>
+  <div class="content-wrapper container">
+    <div class="container-xxl flex-grow-1 container-p-y">
+      <div class="row row-cols-1 row-cols-md-3 g-4 mb-5">
+        <!--card grid start -->
+        <th:block th:each="event:${events}">
+          <a th:href="@{/events/{id}(id = ${event.id})}">
+            <div class="col my-card">
+              <div class="card h-100">
+                <img class="card-img-top" src="assets/img/elements/2.jpg" alt="Card image cap">
+                <div class="card-body">
+                  <h5 class="card-title" th:text="${event.title}">제목</h5>
+                  <p class="cart-text" th:text="${event.title}">내용</p>
+                  <small class="text-muted" th:text="${event.status}">9 mins</small>
+                </div>
+              </div>
+            </div>
+          </a>
+        </th:block>
+      </div>
+    </div>
+  </div>
+  <!--<div class="container py-5">
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+          <th:block th:each="event:${events}">
+            <div class="col">
+              <div class="card shadow-sm">
+                <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#55595c"></rect><text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text></svg>
+
+                <div class="card-body">
+                  <p class="card-text" th:text="${event.title}">test</p>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div class="btn-group">
+                      <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
+                      <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </th:block>
+    </div>
+  </div>-->
+
+  <!-- paging -->
+  <nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-center">
+      <li class="page-item">
+        <a class="page-link" th:href="@{/events(page=0)}" aria-label="Previous">
+          <span aria-hidden="true">&laquo;</span>
+        </a>
+      </li>
+      <li class="page-item"
+          th:class="'page-item ' + (${currentPage} <= 0? 'disabled' : '' )">
+        <a class="page-link"
+           th:href="@{/events(page=${currentPage - 1})}"
+           aria-label="Next">
+          <span aria-hidden="true">&lsaquo;</span>
+        </a>
+      </li>
+      <th:block th:each="page : ${#numbers.sequence(startPage, endPage)}">
+          <li class="page-item">
+            <a class="page-link"
+               th:if="${page != currentPage}"
+               th:href="@{/events(page=${page})}"
+               th:text="${page + 1}">
+            </a>
+          </li>
+          <li class="page-item active">
+            <span class="page-link"
+                  th:if="${page == currentPage}"
+                  th:text="${page + 1}"></span>
+          </li>
+      </th:block>
+      <li class="page-item"
+          th:class="'page-item ' + (${events.last} == true? 'disabled' : '' )">
+        <a class="page-link"
+           th:href="@{/events(page=${currentPage + 1})}"
+           aria-label="Next">
+          <span aria-hidden="true">&rsaquo;</span>
+        </a>
+      </li>
+      <li class="page-item">
+        <a class="page-link"
+           th:href="@{/events(page=${events.totalPages - 1})}" aria-label="Next">
+          <span aria-hidden="true">&raquo;</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+</th:block>>
+</html>

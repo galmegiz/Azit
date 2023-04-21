@@ -1,56 +1,64 @@
 package com.sun.Azit.service;
 
 import com.sun.Azit.constant.Estatus;
-import com.sun.Azit.constant.SearchType;
+import com.sun.Azit.dto.EventFormDto;
 import com.sun.Azit.entity.Event;
-import com.sun.Azit.dto.EventDto;
 import com.sun.Azit.repository.EventRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 
-@Service
+@Transactional
 @RequiredArgsConstructor
+@Service
 public class EventService {
     private final EventRepository eventRepository;
 
-    public Event saveEvent(EventDto eventDto){
-        Event newEvent = eventDto.toEntity();
+    public Page<EventFormDto> getEventLists(Pageable pageable){
+        return eventRepository.findAll(pageable).map(EventFormDto::from);
+    }
+    public Event createEvent(EventFormDto eventFormDto){
+        Event newEvent = Event.of(eventFormDto.getTitle(),
+                eventFormDto.getTitleTag(),
+                eventFormDto.getRecruitDeadline(),
+                eventFormDto.getFee(),
+                eventFormDto.getPeopleLimit(),
+                eventFormDto.getSummary(),
+                eventFormDto.getContent(),
+                Estatus.OPEN_SOON,
+                eventFormDto.getHashTag(),
+                eventFormDto.getStartDate(),
+                eventFormDto.getEndDate());
         return eventRepository.save(newEvent);
     }
 
-    public EventDto getEvent(Long eventId){
-        return eventRepository.findById(eventId)
-                .map(EventDto::from)
-                .orElseThrow(() -> new EntityNotFoundException("게시글이 없습니다"));
+    public EventFormDto getEventDetail(Long id) {
+        return eventRepository.findById(id)
+                .orElseThrow(() -> {
+                            throw new EntityNotFoundException("이벤트가 존재하지 않거나, 삭제되었습니다.");
+                })
+                .toDto();
     }
 
-    public Page<EventDto> searchEvent(SearchType searchType, String searchKeyword, Pageable pageable){
-        if(searchKeyword == null || searchKeyword.isBlank()){
-            return eventRepository.findAll(pageable).map(EventDto::from);
-        }
+    public Long updateEvent(Long id, EventFormDto eventForm){
+        Event updateEvent = eventRepository.findById(id)
+                .orElseThrow(() -> {
+                    throw new EntityNotFoundException("이벤트가 존재하지 않거나 삭제되었습니다.");
+        });
 
-        return switch (searchType){
-            case TITLE -> eventRepository.findByTitleContaining(searchKeyword, pageable).map(EventDto::from);
-            case CONTENT -> eventRepository.findByContentContaining(searchKeyword, pageable).map(EventDto::from);
-            case STATUS -> eventRepository.findByStatus(Estatus.valueOf(searchKeyword), pageable).map(EventDto::from);
-            case FEE -> eventRepository.findByFeeLessThanEqual(Integer.parseInt(searchKeyword), pageable).map(EventDto::from);
-            case PEOPLE_LIMIT -> eventRepository.findByPeopleLimitGreaterThanEqual(Integer.parseInt(searchKeyword), pageable).map(EventDto::from);
-            case ID -> null;
-        };
-    }
-    public void updateEvent(long eventId, EventDto Dto){
-
+        updateEvent.update(eventForm);
+        return updateEvent.getId();
     }
 
-    public void deleteEvent(long eventId){
-        eventRepository.deleteById(eventId);
-    }
-
-    public long getEventCount(){
-        return eventRepository.count();
+    public void deleteEvent(Long id){
+        Event event = eventRepository.findById(id)
+                .orElseThrow(() -> {
+                    throw new EntityNotFoundException("이벤트가 존재하지 않거나 삭제되었습니다.");
+                });
+        eventRepository.delete(event);
     }
 }

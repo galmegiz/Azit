@@ -1,51 +1,121 @@
 package com.sun.Azit.controller;
 
-import com.sun.Azit.constant.SearchType;
-import com.sun.Azit.dto.EventDto;
+import com.sun.Azit.constant.Estatus;
+import com.sun.Azit.dto.EventFormDto;
+import com.sun.Azit.entity.Event;
 import com.sun.Azit.service.EventService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import java.util.List;
+import java.util.Optional;
+
 @Controller
-@RequestMapping("/event")
 @RequiredArgsConstructor
 public class EventController {
-
     private final EventService eventService;
 
-    @GetMapping
-    public String events(
-            @RequestParam(required = false)SearchType searchType,
-            @RequestParam(required = false)String searchValue,
-            @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC)Pageable pageable,
-            ModelMap model){
-        Page<EventDto> events = eventService.searchEvent(searchType, searchValue, pageable);
+    @Transactional(readOnly = true)
+    @GetMapping("/events")
+    public String getEventList(@PageableDefault Pageable pageableQ, Model model){
+        Pageable pageable = PageRequest.of(pageableQ.getPageNumber() >= 0 ? pageableQ.getPageNumber() : 0, 6);
+        Page<EventFormDto> events = eventService.getEventLists(pageable);
+
+        int currentPage = events.getPageable().getPageNumber();
+        int startPage = Math.max(currentPage - 2, 0);
+        int endPage = (currentPage + 2 <= 4) ? 4 : Math.min(currentPage + 2, events.getTotalPages());
         model.addAttribute("events", events);
-        model.addAttribute("searchType", SearchType.values());
-        return "event/index";
+        model.addAttribute("currentPage", currentPage);
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
+        return "/event/eventList";
     }
-    @PostMapping("/register")
-    public void registerEvent(EventDto eventDto){
-        eventService.saveEvent(eventDto);
+
+    @Transactional(readOnly = true)
+    @GetMapping("/events/{id}")
+    public String getEventDetail(@PathVariable Long id, Model model){
+        try{
+            EventFormDto eventFormDto = eventService.getEventDetail(id);
+            model.addAttribute("eventFormDto", eventFormDto);
+        }catch (IllegalStateException e){
+            model.addAttribute("errorMessage", e.getMessage());
+            return "/event/eventList";
+        }
+        return "/event/eventDetail";
+    }
+
+
+    @GetMapping("/admin/events/form")
+    public String getEventForm(Model model){
+        model.addAttribute("eventFormDto", new EventFormDto());
+        return "/event/eventCreate";
+    }
+
+    @PostMapping("/admin/events/form")
+    public String createEvent(@Valid EventFormDto eventFormDto,
+                              BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            return "/event/eventCreate";
+        }
+
+        eventService.createEvent(eventFormDto);
+        return "redirect:/";
+    }
+
+    @Transactional(readOnly = true)
+    @GetMapping("/admin/events/{id}/form")
+    public String getUpdateEventFrom(@PathVariable Long id, Model model){
+        if(id == null){
+            model.addAttribute("errorMessage", "게시글 번호를 입력해주세요");
+            return "/event/eventList";
+        }
+
+        try{
+            EventFormDto eventFormDto = eventService.getEventDetail(id);
+            model.addAttribute("eventFormDto", eventFormDto);
+        }catch (IllegalStateException e){
+            model.addAttribute("errorMessage", e.getMessage());
+            return "/event/eventList";
+        }
+        return "/event/eventCreate";
+    }
+
+    @PatchMapping("/admin/events/{id}")
+    public String updateEvent(@PathVariable Long id, @Valid EventFormDto eventFormDto,
+                              BindingResult bindingResult, Model model){
+        if(id == null){
+            model.addAttribute("errorMessage", "게시글 번호를 입력해주세요");
+            return "/event/eventList";
+        }
+        Long updatedEventId = 0L;
+        try{
+            updatedEventId = eventService.updateEvent(id, eventFormDto);
+        }catch (Exception e){
+            model.addAttribute("errorMessage", "상품 수정 중 에러가 발생하였습니다/");
+            return "redirect:/events";
+        }
+        return "redirect:/events/" + updatedEventId;
 
     }
 
-    @GetMapping("/{eventId}")
-    public String getEvent(@PathVariable("eventId") Long eventId, ModelMap map){
-        EventDto eventDto = eventService.getEvent(eventId);
-        map.addAttribute("event", eventDto);
-        return "event/detail";
+    @DeleteMapping("/admin/events/{id}")
+    public String deleteEvent(@PathVariable Long id, Model model){
+        if(id == null) {
+            model.addAttribute("errorMessage", "게시글 번호를 입력해주세요");
+            return "/event/eventList";
+        }
+        eventService.deleteEvent(id);
+        return "/event/eventList";
     }
 
-    @PostMapping("/{eventId}/delete")
-    public String deleteEvent(@PathVariable("eventId") Long eventId){
-        eventService.deleteEvent(eventId);
-        return "redirect:/event";
-    }
 }

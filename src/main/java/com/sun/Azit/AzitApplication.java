@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfi
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController
+
 @SpringBootApplication(exclude = SecurityAutoConfiguration.class)
 public class AzitApplication {
 
@@ -14,12 +14,5 @@ public class AzitApplication {
 		SpringApplication.run(AzitApplication.class, args);
 
 	}
-
-	@GetMapping(value = "/")
-	public String HellowWorld(){
-		return "Hello world";
-	}
-
-
 
 }

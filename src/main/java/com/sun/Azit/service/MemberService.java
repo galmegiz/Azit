@@ -1,5 +1,7 @@
 package com.sun.Azit.service;
 
+import com.sun.Azit.constant.Role;
+import com.sun.Azit.dto.MemberFormDto;
 import com.sun.Azit.entity.Member;
 import com.sun.Azit.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,17 +15,9 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
-    public Member saveMember(Member member){
+    public Member registerMember(Member member){
         validateDuplicateMember(member);
         return memberRepository.save(member);
-    }
-
-    public void deleteMember(Long id){
-        `
-    }
-
-    public Optional<Member> findMember(Long id){
-        return memberRepository.findById(id);
     }
 
     private void validateDuplicateMember(Member member){

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layouts/defaultLayout}">
+
+<th:block layout:fragment="css">
+    <style>
+    @media (min-width: 1000px){
+    div.text-align{text-align:left!important; };
+
+    }
+    @media (max-width: 1000px){
+    div.text-align{text-align:center!important;};
+
+    }
+
+    @media (min-width:990px){
+    img.img-upcomingevent{ width: 400px;
+    height: auto;}
+    .event_desc{height:400px;}
+
+    }
+
+    @media (max-width:990px){
+    img.img-upcomingevent{ width: 400px;
+    height: auto; margin-bottom:50px;}
+
+    }
+
+    @media (max-width:500px){
+    img.img-upcomingevent{ width: 300px;
+    height: auto; margin-bottom:50px;}
+    }
+
+    .eventview{margin-top:50px; padding-bottom:30px;}
+    div.section-intro{padding-bottom: 20px;}
+
+    section.middle {border-bottom:1px solid #dbd9e6;}
+    aside.single_sidebar_widget {padding-top:20px !important;}
+    aside.single_sidebar_widget p { font-size:14px; line-height:20px; color:#888888; }
+    h4.widget_title {margin-bottom: 10px !important; color:#16a085;}
+    .sidebar_list{border-bottom: 1px solid #f0e9ff; margin-bottom:10px;}
+    .blog_right_sidebar .widget_title:after{border-bottom:0px;}
+    .blog_right_sidebar .single_sidebar_widget {background: white; margin-bottom:0px;}
+    .blog_area{margin-bottom:20px;}
+    .blog_details{padding-top:0px !important;}
+    .button:hover{background: orange; border: 1px solid white; color: white !important; }
+    .posts-list{padding-top:20px !important;}
+
+
+
+    </style>
+</th:block>
+
+<th:block layout:fragment="content">
+    <section class="domain-search eventview middle">
+        <div class="container">
+            <div class="section-intro text-center">
+            </div>
+            <div class="row align-items-center event_row h-container" >
+                <div class="col-lg-6 event_col">
+                    <div class="text-center">
+                        <img class="img-upcomingevent" src=""  alt="">
+                    </div>
+                </div>
+                <div class="col-lg-6 mb-6 mb-lg-0 event_col event_desc">
+                    <h2 class="mb-4">[[${eventFormDto.title}]]</h2>
+                    <p>요약</p>
+                    <p>참가 비용 : [[${eventFormDto.fee}]] 원</p>
+                    <p>참가 인원 : [[${eventFormDto.peopleLimit}]]명</p>
+                    <div class="text-center">
+                        <a href="" class="btn rounded-pill btn-warning">이벤트 참여하기</a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+    </div>
+    <!-- upcoming event end -->
+    </div>
+    <section class="blog_area single-post-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="blog_right_sidebar">
+                        <aside class="single_sidebar_widget post_category_widget">
+                            <div class="sidebar_list">
+                                <h4 class="widget_title">이벤트 기간</h4>
+                                <p>
+                                    [[${eventFormDto.startDate}]]
+                                    ~
+                                    [[${eventFormDto.endDate}]]
+                                </p>
+                            </div>
+                            <div class="sidebar_list">
+                                <h4 class="widget_title">모집마감일</h4>
+                                <p>
+                                    [[${eventFormDto.recruitDeadline}]]
+                                </p>
+                            </div>
+                            <div class="sidebar_list">
+                                <h4 class="widget_title">문의</h4>
+                                <p><img src="/resources/lorahost-master/img/gmail.png" style="width:20px ;height: auto; margin-right:5px;"/>메일 : hyd.busan@gmail.com</p>
+                                <p><img src="/resources/lorahost-master/img/kakao.png" style="width:20px ;height: auto; margin-right:5px;"/>카톡채널 : 친구찾기>'홍예당'검색>채널 추가</p>
+                            </div>
+                        </aside>
+                    </div>
+                </div>
+                <div class="col-lg-8 posts-list">
+                    <div class="single-post">
+                        <div class="blog_details">
+                            <p class="excert" th:text="${eventFormDto.content}">
+                                내용
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+    </section>
+</th:block>>
+</html>
