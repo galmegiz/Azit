@@ -19,12 +19,15 @@ public class QEvent extends EntityPathBase<Event> {
 
     public static final QEvent event = new QEvent("event");
 
-    public final QBaseTimeEntity _super = new QBaseTimeEntity(this);
+    public final QBaseEntity _super = new QBaseEntity(this);
 
     public final StringPath content = createString("content");
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
+
+    //inherited
+    public final StringPath createdBy = _super.createdBy;
 
     public final DateTimePath<java.time.LocalDateTime> endDate = createDateTime("endDate", java.time.LocalDateTime.class);
 
@@ -33,6 +36,9 @@ public class QEvent extends EntityPathBase<Event> {
     public final StringPath hashtag = createString("hashtag");
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
+
+    //inherited
+    public final StringPath modifiedBy = _super.modifiedBy;
 
     public final NumberPath<Integer> peopleLimit = createNumber("peopleLimit", Integer.class);
 

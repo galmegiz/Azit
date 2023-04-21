@@ -9,13 +9,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -28,12 +27,13 @@ public class EventController {
 
     @Transactional(readOnly = true)
     @GetMapping("/events")
-    public String getEventList(@PageableDefault(size = 6) Pageable pageable, Model model){
+    public String getEventList(@PageableDefault Pageable pageableQ, Model model){
+        Pageable pageable = PageRequest.of(pageableQ.getPageNumber() >= 0 ? pageableQ.getPageNumber() : 0, 6);
         Page<EventFormDto> events = eventService.getEventLists(pageable);
 
         int currentPage = events.getPageable().getPageNumber();
-        int startPage = Math.max(currentPage - 4, 0);
-        int endPage = Math.min(currentPage + 5, events.getTotalPages());
+        int startPage = Math.max(currentPage - 2, 0);
+        int endPage = (currentPage + 2 <= 4) ? 4 : Math.min(currentPage + 2, events.getTotalPages());
         model.addAttribute("events", events);
         model.addAttribute("currentPage", currentPage);
         model.addAttribute("startPage", startPage);
@@ -41,32 +41,81 @@ public class EventController {
         return "/event/eventList";
     }
 
-    @GetMapping("/events/create")
+    @Transactional(readOnly = true)
+    @GetMapping("/events/{id}")
+    public String getEventDetail(@PathVariable Long id, Model model){
+        try{
+            EventFormDto eventFormDto = eventService.getEventDetail(id);
+            model.addAttribute("eventFormDto", eventFormDto);
+        }catch (IllegalStateException e){
+            model.addAttribute("errorMessage", e.getMessage());
+            return "/event/eventList";
+        }
+        return "/event/eventDetail";
+    }
+
+
+    @GetMapping("/admin/events/form")
     public String getEventForm(Model model){
         model.addAttribute("eventFormDto", new EventFormDto());
         return "/event/eventCreate";
     }
 
-    @PostMapping("/events/create")
+    @PostMapping("/admin/events/form")
     public String createEvent(@Valid EventFormDto eventFormDto,
                               BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             return "/event/eventCreate";
         }
 
-        Event newEvent = Event.of(eventFormDto.getTitle(),
-                                    eventFormDto.getTitleTag(),
-                                    eventFormDto.getRecruitDeadline(),
-                                    eventFormDto.getFee(),
-                                    eventFormDto.getPeopleLimit(),
-                                    eventFormDto.getSummary(),
-                                    eventFormDto.getContent(),
-                                    Estatus.OPEN_SOON,
-                                    eventFormDto.getHashTag(),
-                                    eventFormDto.getStartDate(),
-                                    eventFormDto.getEndDate());
-        eventService.createEvent(newEvent);
+        eventService.createEvent(eventFormDto);
         return "redirect:/";
+    }
+
+    @Transactional(readOnly = true)
+    @GetMapping("/admin/events/{id}/form")
+    public String getUpdateEventFrom(@PathVariable Long id, Model model){
+        if(id == null){
+            model.addAttribute("errorMessage", "게시글 번호를 입력해주세요");
+            return "/event/eventList";
+        }
+
+        try{
+            EventFormDto eventFormDto = eventService.getEventDetail(id);
+            model.addAttribute("eventFormDto", eventFormDto);
+        }catch (IllegalStateException e){
+            model.addAttribute("errorMessage", e.getMessage());
+            return "/event/eventList";
+        }
+        return "/event/eventCreate";
+    }
+
+    @PatchMapping("/admin/events/{id}")
+    public String updateEvent(@PathVariable Long id, @Valid EventFormDto eventFormDto,
+                              BindingResult bindingResult, Model model){
+        if(id == null){
+            model.addAttribute("errorMessage", "게시글 번호를 입력해주세요");
+            return "/event/eventList";
+        }
+        Long updatedEventId = 0L;
+        try{
+            updatedEventId = eventService.updateEvent(id, eventFormDto);
+        }catch (Exception e){
+            model.addAttribute("errorMessage", "상품 수정 중 에러가 발생하였습니다/");
+            return "redirect:/events";
+        }
+        return "redirect:/events/" + updatedEventId;
+
+    }
+
+    @DeleteMapping("/admin/events/{id}")
+    public String deleteEvent(@PathVariable Long id, Model model){
+        if(id == null) {
+            model.addAttribute("errorMessage", "게시글 번호를 입력해주세요");
+            return "/event/eventList";
+        }
+        eventService.deleteEvent(id);
+        return "/event/eventList";
     }
 
 }

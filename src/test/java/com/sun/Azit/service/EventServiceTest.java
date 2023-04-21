@@ -12,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 
 @Transactional
@@ -37,7 +38,8 @@ class EventServiceTest {
                 "hashtag",
                 LocalDateTime.now(),
                 LocalDateTime.now());
-        eventService.createEvent(nevent);
+        EventFormDto eventForm = nevent.toDto();
+        eventService.createEvent(eventForm);
         Event gevent = eventRepository.findByTitle("title").get();
         Assertions.assertThat(gevent.getTitle()).isEqualTo(nevent.getTitle());
     }
@@ -56,10 +58,52 @@ class EventServiceTest {
                 "hashtag",
                 LocalDateTime.now(),
                 LocalDateTime.now());
-        eventService.createEvent(nevent);
+        EventFormDto eventForm = nevent.toDto();
+        eventService.createEvent(eventForm);
+        System.out.println(eventRepository.findByTitle("title").get());
         Assertions.assertThat(eventService.getEventDetail(1L)).isInstanceOf(EventFormDto.class);
         Assertions.assertThatThrownBy(() -> eventService.getEventDetail(2L))
-            .isInstanceOf(IllegalStateException.class);
+            .isInstanceOf(EntityNotFoundException.class);
 
+    }
+
+    @Test
+    @DisplayName("이벤트 업데이트 테스트")
+    void eventUpdateTest(){
+        Event nevent1 = Event.of("title1",
+                "titleTag",
+                LocalDateTime.now(),
+                100,
+                100,
+                "summary",
+                "content",
+                Estatus.OPEN,
+                "hashtag",
+                LocalDateTime.now(),
+                LocalDateTime.now());
+
+        Event nevent2 = Event.of("title2",
+                "titleTag",
+                LocalDateTime.now(),
+                100,
+                100,
+                "summary",
+                "content",
+                Estatus.OPEN,
+                "hashtag",
+                LocalDateTime.now(),
+                LocalDateTime.now());
+        eventService.createEvent(nevent1.toDto());
+        eventService.createEvent(nevent2.toDto());
+        System.out.println(eventRepository.findByTitle("title1"));
+        System.out.println(eventRepository.findByTitle("title2"));
+        Event event = eventRepository.findById(3L).get();
+        String title = event.getTitle();
+        System.out.println(title);
+        EventFormDto eventFormDto = event.toDto();
+        String newTitle = "안녕하세요";
+        eventFormDto.setTitle(newTitle);
+        eventService.updateEvent(3L, eventFormDto);
+        Assertions.assertThat(eventRepository.findById(3L).get().getTitle()).isEqualTo(newTitle);
     }
 }

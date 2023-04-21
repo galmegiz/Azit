@@ -3,10 +3,42 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{common/layouts/defaultLayout}">
 
-
+<th: block layout:fragment="css">
+  <style>
+    .my-card{
+      padding:45px 30px;
+    }
+  </style>
+</th:>
 
 <th:block layout:fragment="content">
-  <div class="container py-5">
+  <section class="py-5 text-center container">
+    <div class="row py-lg-5">
+      <p> albaum </p>
+    </div>
+  </section>
+  <div class="content-wrapper container">
+    <div class="container-xxl flex-grow-1 container-p-y">
+      <div class="row row-cols-1 row-cols-md-3 g-4 mb-5">
+        <!--card grid start -->
+        <th:block th:each="event:${events}">
+          <a th:href="@{/events/{id}(id = ${event.id})}">
+            <div class="col my-card">
+              <div class="card h-100">
+                <img class="card-img-top" src="assets/img/elements/2.jpg" alt="Card image cap">
+                <div class="card-body">
+                  <h5 class="card-title" th:text="${event.title}">제목</h5>
+                  <p class="cart-text" th:text="${event.title}">내용</p>
+                  <small class="text-muted" th:text="${event.status}">9 mins</small>
+                </div>
+              </div>
+            </div>
+          </a>
+        </th:block>
+      </div>
+    </div>
+  </div>
+  <!--<div class="container py-5">
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
           <th:block th:each="event:${events}">
             <div class="col">
@@ -20,18 +52,19 @@
                       <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
                       <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
                     </div>
-                    <small class="text-muted" th:text="${event.status}">9 mins</small>
                   </div>
                 </div>
               </div>
             </div>
           </th:block>
     </div>
-  </div>
+  </div>-->
+
+  <!-- paging -->
   <nav aria-label="Page navigation example">
     <ul class="pagination justify-content-center">
       <li class="page-item">
-        <a class="page-link" th:href="@{/events/(page=0)}" aria-label="Previous">
+        <a class="page-link" th:href="@{/events(page=0)}" aria-label="Previous">
           <span aria-hidden="true">&laquo;</span>
         </a>
       </li>
@@ -43,11 +76,11 @@
           <span aria-hidden="true">&lsaquo;</span>
         </a>
       </li>
-      <th:block th:each="page : ${#numbers.sequence(startPage, endPage - 1)}">
+      <th:block th:each="page : ${#numbers.sequence(startPage, endPage)}">
           <li class="page-item">
             <a class="page-link"
                th:if="${page != currentPage}"
-               th:href="@{events(page=${page})}"
+               th:href="@{/events(page=${page})}"
                th:text="${page + 1}">
             </a>
           </li>

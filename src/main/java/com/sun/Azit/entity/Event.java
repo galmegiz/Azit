@@ -16,7 +16,7 @@ import java.util.Objects;
 @Table(name = "event")
 @NoArgsConstructor
 @Entity
-public class Event extends BaseTimeEntity{
+public class Event extends BaseEntity{
     @Id @Column(name="event_id") @GeneratedValue(strategy = GenerationType.IDENTITY) private Long id;
     @Setter @Column(nullable = false) private String title;
     @Setter private String titleTag;
@@ -51,7 +51,8 @@ public class Event extends BaseTimeEntity{
     }
 
     public EventFormDto toDto(){
-        return new EventFormDto(this.title,
+        return new EventFormDto(this.id,
+                this.title,
                 this.titleTag,
                 this.recruitDeadline,
                 this.fee,
@@ -75,5 +76,19 @@ public class Event extends BaseTimeEntity{
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    public void update(EventFormDto eventForm) {
+        this.title = eventForm.getTitle();
+        this.titleTag = eventForm.getTitleTag();
+        this.recruitDeadline = eventForm.getRecruitDeadline();
+        this.fee = eventForm.getFee();
+        this.peopleLimit = eventForm.getPeopleLimit();;
+        this.summary = eventForm.getSummary();
+        this.content = eventForm.getContent();
+        this.status = eventForm.getStatus();
+        this.hashtag = eventForm.getHashTag();
+        this.startDate = eventForm.getStartDate();
+        this.endDate = eventForm.getEndDate();
     }
 }

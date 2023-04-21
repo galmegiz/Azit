@@ -15,6 +15,8 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 public class EventFormDto {
+
+    private Long id;
     @NotBlank(message = "제목은 필수 입력 값입니다.")
     private String title;
     private String titleTag = "";
@@ -30,7 +32,7 @@ public class EventFormDto {
     private String summary = "";
     @NotBlank(message = "내용을 입력해주세요")
     private String content;
-    private Estatus status;
+    private Estatus status = Estatus.OPEN_SOON;
     private String hashTag = "";
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     @FutureOrPresent(message = "이벤트 시작일은 오늘 이후여야 합니다.")
@@ -39,7 +41,8 @@ public class EventFormDto {
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime endDate;
 
-    public EventFormDto(String title, String titleTag, LocalDateTime recruitDeadLine, int fee, int peopleLimit, String summary, String content, Estatus status, String hashTag, LocalDateTime startDate, LocalDateTime endDate) {
+    public EventFormDto(Long id, String title, String titleTag, LocalDateTime recruitDeadLine, int fee, int peopleLimit, String summary, String content, Estatus status, String hashTag, LocalDateTime startDate, LocalDateTime endDate) {
+        this.id = id;
         this.title = title;
         this.titleTag = titleTag;
         this.recruitDeadline = recruitDeadLine;
@@ -54,7 +57,8 @@ public class EventFormDto {
     }
 
     public static EventFormDto from(Event event){
-       return new EventFormDto(event.getTitle(),
+       return new EventFormDto(event.getId(),
+               event.getTitle(),
                event.getTitleTag(),
                event.getRecruitDeadline(),
                event.getFee(),
