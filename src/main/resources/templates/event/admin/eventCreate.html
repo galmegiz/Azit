@@ -9,7 +9,21 @@
     .form_btn{
       float: right;
     }
+    .fieldError {
+        color: #bd2130;
+    }
   </style>
+</th:block>
+
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+            $(document).ready(function(){
+                var errorMessage = [[${errorMessage}]];
+                if(errorMessage != null){
+                    alert(errorMessage);
+                }
+            })
+        </script>
 </th:block>
 
 <th:block layout:fragment="content">
@@ -21,7 +35,7 @@
           <div class="card mb-4">
             <h5 class="card-header">이벤트 입력</h5>
             <div class="card-body">
-              <form action="/events/create" role="form" method="post" th:object="${eventFormDto}">
+                <form th:action="${eventFormDto.id == null} ? '/admin/events/form' : @{|/admin/events/${eventFormDto.id}|}" method="post" th:object="${eventFormDto}">
                 <div class="mb-3 row">
                   <label th:for="title" class="col-md-2 col-form-label">제목</label>
                   <div class="col-md-10">
@@ -39,7 +53,7 @@
                 <div class="mb-3 row">
                   <label th:for="recruitDeadline" class="col-md-2 col-form-label">모집마감일</label>
                   <div class="col-md-10">
-                    <input type="text" th:field="*{recruitDeadline}" class="form-control" id="recruitDeadline" placeholder="">
+                    <input type="datetime-local" th:field="*{recruitDeadline}" class="form-control" id="recruitDeadline" placeholder="">
                     <p th:if="${#fields.hasErrors('recruitDeadline')}" th:errors="*{recruitDeadline}" class="fieldError">입력값이 잘못됐습니다.</p>
                   </div>
                 </div>
@@ -96,10 +110,10 @@
                   <div class="mb-3 row">
                     <label th:for="status" class="col-md-2 col-form-label">상태</label>
                     <div class="col-md-10">
-                      <select id="status" class="form-select">
-                        <option value="OPEN_SOON">OPEN_SOON</option>
-                        <option value="CLOSE">CLOSE</option>
-                        <option value="OPEN">OPEN</option>
+                      <select th:field="*{status}" id="status" class="form-select">
+                          <option value="CLOSE">CLOSE</option>
+                          <option value="OPEN_SOON">OPEN_SOON</option>
+                            <option value="OPEN">OPEN</option>
                       </select>
                     </div>
                   </div>

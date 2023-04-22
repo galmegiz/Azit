@@ -32,7 +32,7 @@
     height: auto; margin-bottom:50px;}
     }
 
-    .eventview{margin-top:50px; padding-bottom:30px;}
+    .eventview{padding-bottom:30px;}
     div.section-intro{padding-bottom: 20px;}
 
     section.middle {border-bottom:1px solid #dbd9e6;}
@@ -64,8 +64,12 @@
                     </div>
                 </div>
                 <div class="col-lg-6 mb-6 mb-lg-0 event_col event_desc">
-                    <h2 class="mb-4">[[${eventFormDto.title}]]</h2>
-                    <p>요약</p>
+                     <span th:text="${eventFormDto.status}" th:classappend="${eventFormDto.status.name() == 'OPEN' ? 'badge bg-label-success' : (eventFormDto.status.name() == 'CLOSE' ? 'badge bg-label-dark' : 'badge bg-label-warning')}">
+                     </span>
+                    <h2 class="mb-4">
+                        [[${eventFormDto.title}]]
+                    </h2>
+                    <p th:text="${eventFormDto.summary}">요약</p>
                     <p>참가 비용 : [[${eventFormDto.fee}]] 원</p>
                     <p>참가 인원 : [[${eventFormDto.peopleLimit}]]명</p>
                     <div class="text-center">

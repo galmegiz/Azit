@@ -44,7 +44,7 @@
                                     <input type="password" th:field="*{password}" class="form-control" id="password" placeholder="패스워드를 입력해주세요">
                                     <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="fieldError">입력값이 잘못됐습니다.</p>
                                 </div>
-                                <button type="submit" class="btn btn-primary d-grid w-100">Submit</button>
+                                <button type="submit" class="btn btn-warning d-grid w-100">Submit</button>
                             </form>
                         </div>
                     </div>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layouts/defaultLayout}">
+
+<th:block layout:fragment="css">
+  <style>
+    .my-card{
+      padding:45px 30px;
+    }
+    a{
+      color:#888888;
+    }
+    .btn.show{
+      border: none;
+    }
+    .table{
+      text-align: center;
+    }
+  </style>
+</th:block>
+<th:block layout:fragment="script">
+  <script>
+
+  $(document).on("click", 'a[id^="delete"]', function(){
+    var id = $(this).attr("id").substr(6);
+    if(confirm(id + "이벤트를 삭제하시겠습니까?")){
+    $.ajax({
+      url: "/admin/events/" + id,
+      method: "DELETE",
+      dataType: "text",
+      success: function(data) {
+        alert("이벤트 " + data + "번 삭제가 완료되었습니다.")
+        location.href='/admin/events?page=' + [[${events.number}]]
+      }
+    });
+    }
+  });
+
+   </script>
+</th:block>
+
+<th:block layout:fragment="content">
+  <section class="py-5 text-center container">
+    <div class="row py-lg-5">
+      <p> albaum </p>
+    </div>
+  </section>
+  <div class="content-wrapper container">
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <!--card grid start -->
+        <div class="card">
+          <div class="card-header">이벤트 현황</div>
+          <div class="table-responsive text-nowrap">
+            <table class="table table-hover">
+              <thead>
+              <tr>
+                <th>번호</th>
+                <th>제목</th>
+                <th>가격</th>
+                <th>신청인원</th>
+                <th>상태</th>
+                <th>모집마감일</th>
+                <th>수정 및 삭제</th>
+              </tr>
+              </thead>
+              <th:block th:each="event:${events}">
+              <tbody class="table-border-bottom-0">
+                <td th:text="${event.id}">번호</td>
+                <td><a th:href="@{/events/{id}(id = ${event.id})}"><strong th:text="${event.title}">제목</strong></a></td>
+                <td th:text="${event.fee}">가격</td>
+                <td th:text="${event.peopleLimit}">신청인원</td>
+                <td>
+                  <span th:text="${event.status}" th:classappend="${event.status.name() == 'OPEN' ? 'badge bg-label-success' : (event.status.name() == 'CLOSE' ? 'badge bg-label-dark' : 'badge bg-label-warning')}">
+                    상태
+                  </span>
+                </td>
+                <td th:text="${event.recruitDeadline}">모집 마감일</td>
+                <td>
+                  <div class="dropdown">
+                    <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                      <i class="bx bx-dots-vertical-rounded"></i>
+                    </button>
+                    <div class="dropdown-menu">
+                      <a class="dropdown-item" th:href="@{/admin/events/{id}/form(id = ${event.id})}">
+                        <i class="bx bx-edit-alt me-1"></i>
+                        수정하기
+                      </a>
+                      <a class="dropdown-item" th:id="'delete'+${event.id}">
+                        <i class="bx bx-edit-alt me-1"></i>
+                        삭제하기
+                      </a>
+                    </div>
+                  </div>
+                </td>
+              </tbody>
+              </th:block>
+            </table>
+          </div>
+        </div>
+      </div>
+  </div>
+
+
+  <!-- paging -->
+  <nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-center">
+      <li class="page-item">
+        <a class="page-link" th:href="@{/admin/events(page=0)}" aria-label="Previous">
+          <span aria-hidden="true">&laquo;</span>
+        </a>
+      </li>
+      <li class="page-item"
+          th:class="'page-item ' + (${currentPage} <= 0? 'disabled' : '' )">
+        <a class="page-link"
+           th:href="@{/admin/events(page=${currentPage - 1})}"
+           aria-label="Next">
+          <span aria-hidden="true">&lsaquo;</span>
+        </a>
+      </li>
+      <th:block th:each="page : ${#numbers.sequence(startPage, endPage)}">
+          <li class="page-item">
+            <a class="page-link"
+               th:if="${page != currentPage}"
+               th:href="@{/admin/events(page=${page})}"
+               th:text="${page + 1}">
+            </a>
+          </li>
+          <li class="page-item active">
+            <span class="page-link"
+                  th:if="${page == currentPage}"
+                  th:text="${page + 1}"></span>
+          </li>
+      </th:block>
+      <li class="page-item"
+          th:class="'page-item ' + (${events.last} == true? 'disabled' : '' )">
+        <a class="page-link"
+           th:href="@{/admin/events(page=${currentPage + 1})}"
+           aria-label="Next">
+          <span aria-hidden="true">&rsaquo;</span>
+        </a>
+      </li>
+      <li class="page-item">
+        <a class="page-link"
+           th:href="@{/admin/events(page=${events.totalPages - 1})}" aria-label="Next">
+          <span aria-hidden="true">&raquo;</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+</th:block>>
+</html>

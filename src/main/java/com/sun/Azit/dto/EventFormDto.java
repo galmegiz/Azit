@@ -5,6 +5,7 @@ import com.sun.Azit.entity.Event;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
 @Setter
 @Getter
 @NoArgsConstructor
+@ToString
 public class EventFormDto {
 
     private Long id;
@@ -21,7 +23,7 @@ public class EventFormDto {
     private String title;
     private String titleTag = "";
     @FutureOrPresent(message = "모집 마감일은 오늘 이후여야 합니다.")
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime recruitDeadline;
     @Max(value = 100, message = "100만 원을 넘을 수 없습니다.")
     @Min(value = 1, message = "최소 금액을 입력해야 합니다.")
@@ -34,11 +36,11 @@ public class EventFormDto {
     private String content;
     private Estatus status = Estatus.OPEN_SOON;
     private String hashTag = "";
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     @FutureOrPresent(message = "이벤트 시작일은 오늘 이후여야 합니다.")
     private LocalDateTime startDate;
     @FutureOrPresent(message = "이벤트 종료는 오늘 이후여야 합니다.")
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime endDate;
 
     public EventFormDto(Long id, String title, String titleTag, LocalDateTime recruitDeadLine, int fee, int peopleLimit, String summary, String content, Estatus status, String hashTag, LocalDateTime startDate, LocalDateTime endDate) {
