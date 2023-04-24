@@ -61,13 +61,8 @@ public class EventService {
                 eventFormDto.getHashTag(),
                 eventFormDto.getStartDate(),
                 eventFormDto.getEndDate());
+        eventImgService.saveEventImg(newEvent, itemImg);
         eventRepository.save(newEvent);
-
-
-        EventImg eventImg = new EventImg();
-        eventImg.setEvent(newEvent);
-
-        eventImgService.saveEventImg(eventImg, itemImg);
         return newEvent;
     }
 

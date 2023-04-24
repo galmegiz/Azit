@@ -30,7 +30,7 @@ public class Event extends BaseEntity{
     @Setter @Column(nullable = false) private LocalDateTime startDate;
     @Setter @Column(nullable = false) private LocalDateTime endDate;
 
-    @OneToOne(mappedBy = "event", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToOne(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
     private EventImg eventImg;
 
 

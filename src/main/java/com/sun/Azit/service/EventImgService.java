@@ -21,11 +21,10 @@ public class EventImgService {
     @Value("${eventImgLocation}")
     private String eventImgLocation;
 
-    private final EventRepository eventRepository;
     private final EventImgRepository eventImgRepository;
     private final FileService fileService;
 
-    public void saveEventImg(EventImg eventImg, MultipartFile eventImgFile) throws Exception{
+    public void saveEventImg(Event event, MultipartFile eventImgFile) throws Exception{
         String oriImgName = eventImgFile.getOriginalFilename();
         String imgName = "";
         String imgUrl = "";
@@ -34,9 +33,12 @@ public class EventImgService {
             imgName = fileService.uploadFile(eventImgLocation, oriImgName, eventImgFile.getBytes());
             imgUrl = "/images/item/" + imgName;
         }
+        EventImg eventImg = new EventImg();
         eventImg.setImgUrl(imgUrl);
         eventImg.setImgName(imgName);
         eventImg.setOriImgName(oriImgName);
+        eventImg.setEvent(event);
         eventImgRepository.save(eventImg);
     }
+
 }
