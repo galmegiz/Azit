@@ -3,6 +3,7 @@ package com.sun.Azit.entity;
 import com.sun.Azit.dto.EventImgDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 import org.modelmapper.ModelMapper;
 
@@ -13,18 +14,19 @@ import java.util.Objects;
 @ToString
 @Getter
 @NoArgsConstructor
-@Table(name = "item_img")
+@Table(name = "event_img")
 public class EventImg extends BaseEntity{
-    @Id @Column(name="item_img_id")
+    @Id @Column(name="event_img_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String imgName;
-    private String oriImgName;
-    private String imgUrl;
+    @Setter private String imgName;
+    @Setter private String oriImgName;
+    @Setter private String imgUrl;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "event_id")
+    @Setter
     private Event event;
 
     protected EventImg(String imgName, String oriImgName, String imgUrl) {
@@ -33,19 +35,27 @@ public class EventImg extends BaseEntity{
         this.imgUrl = imgUrl;
     }
 
+    public EventImg(String imgName, String oriImgName, String imgUrl, Event event) {
+        this.imgName = imgName;
+        this.oriImgName = oriImgName;
+        this.imgUrl = imgUrl;
+        this.event = event;
+    }
+
     // Dto <-> Entity
     private static ModelMapper modelMapper = new ModelMapper();
 
-    public static EventImgDto toDto(EventImg eventImg){
-        return modelMapper.map(eventImg, EventImgDto.class);
+    public EventImgDto toDto(){
+        return modelMapper.map(this, EventImgDto.class);
     }
 
 
-    public void of(String oriImageName, String imgName, String imgUrl, Event event){
-        this.oriImgName = oriImageName;
-        this.imgName = imgName;
-        this.imgUrl = imgUrl;
-        this.event = event;
+    public static EventImg of(String oriImageName, String imgName, String imgUrl){
+        return new EventImg(
+                oriImageName,
+                imgName,
+                imgUrl
+        );
     }
 
     @Override

@@ -25,19 +25,18 @@ public class EventImgService {
     private final EventImgRepository eventImgRepository;
     private final FileService fileService;
 
-    public void saveEventImg(EventImg eventImg, MultipartFile eventImgFile, Long eventId) throws Exception{
-        String oriImgName = eventImg.getOriImgName();
+    public void saveEventImg(EventImg eventImg, MultipartFile eventImgFile) throws Exception{
+        String oriImgName = eventImgFile.getOriginalFilename();
         String imgName = "";
         String imgUrl = "";
 
         if(!StringUtils.isEmpty(oriImgName)){
             imgName = fileService.uploadFile(eventImgLocation, oriImgName, eventImgFile.getBytes());
-            imgUrl = File.separator + "images" + File.separator + "item" + File.separator + imgName;
+            imgUrl = "/images/item/" + imgName;
         }
-        Event event = eventRepository.findById(eventId).orElseThrow(() -> {
-            throw new EntityNotFoundException("이미지 업로드를 위한 게시글이 존재하지 않습니다.");
-        });
-        eventImg.of(oriImgName, imgName, imgUrl, event);
+        eventImg.setImgUrl(imgUrl);
+        eventImg.setImgName(imgName);
+        eventImg.setOriImgName(oriImgName);
         eventImgRepository.save(eventImg);
     }
 }

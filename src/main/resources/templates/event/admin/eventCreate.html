@@ -35,7 +35,7 @@
           <div class="card mb-4">
             <h5 class="card-header">이벤트 입력</h5>
             <div class="card-body">
-                <form th:action="${eventFormDto.id == null} ? '/admin/events/form' : @{|/admin/events/${eventFormDto.id}|}" method="post" th:object="${eventFormDto}">
+                <form th:action="${eventFormDto.id == null} ? '/admin/events/form' : @{|/admin/events/${eventFormDto.id}|}" method="post" enctype="multipart/form-data" th:object="${eventFormDto}">
                 <div class="mb-3 row">
                   <label th:for="title" class="col-md-2 col-form-label">제목</label>
                   <div class="col-md-10">
@@ -118,6 +118,14 @@
                     </div>
                   </div>
                 </th:block>
+                <div class="mb-3 row">
+                    <label th:for="eventImgFile" class="col-md-2 col-form-label">이미지 파일</label>
+                    <div class="col-md-10">
+                        <input type="file" class="form-control" name="eventImgFile" id="eventImgFile" placeholder="">
+                        <p th:if="${#fields.hasErrors('eventImgDto')}" th:errors="*{eventImgDto}" class="fieldError">입력값이 잘못됐습니다.</p>
+                    </div>
+                </div>
+
                   <button th:if="*{id == null}" type="submit" class="btn rounded-pill btn-warning form_btn">이벤트 만들기</button>
                 <button th:unless="*{id == null}" type="submit" class="btn rounded-pill btn-warning form_btn">이벤트 수정하기</button>
               </form>
