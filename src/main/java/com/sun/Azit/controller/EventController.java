@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -34,7 +35,13 @@ public class EventController {
 
         int currentPage = events.getPageable().getPageNumber();
         int startPage = Math.max(currentPage - 2, 0);
-        int endPage = (currentPage + 2 <= 4) ? 4 : Math.min(currentPage + 2, events.getTotalPages() - 1);
+        int endPage;
+        if (events.getTotalPages() - 1 <= 4){
+            endPage = events.getTotalPages() - 1;
+        } else{
+            endPage = (currentPage + 2 <= 4) ? 4 : Math.min(currentPage + 2, events.getTotalPages() - 1);
+        }
+
         model.addAttribute("events", events);
         model.addAttribute("currentPage", currentPage);
         model.addAttribute("startPage", startPage);
@@ -63,7 +70,12 @@ public class EventController {
 
         int currentPage = events.getPageable().getPageNumber();
         int startPage = Math.max(currentPage - 2, 0);
-        int endPage = (currentPage + 2 <= 4) ? 4 : Math.min(currentPage + 2, events.getTotalPages() - 1);
+        int endPage;
+        if (events.getTotalPages() - 1 <= 4){
+            endPage = events.getTotalPages() - 1;
+        } else{
+            endPage = (currentPage + 2 <= 4) ? 4 : Math.min(currentPage + 2, events.getTotalPages() - 1);
+        }
         model.addAttribute("events", events);
         model.addAttribute("currentPage", currentPage);
         model.addAttribute("startPage", startPage);
@@ -79,12 +91,18 @@ public class EventController {
 
     @PostMapping("/admin/events/form")
     public String createEvent(@Valid EventFormDto eventFormDto,
-                              BindingResult bindingResult, Model model) {
+                              BindingResult bindingResult, Model model,
+                              @RequestParam("eventImgFile")MultipartFile eventImgFile) {
         if (bindingResult.hasErrors()) {
             return "/event/admin/eventCreate";
         }
+        try{
+            eventService.createEvent(eventFormDto, eventImgFile);
+        } catch (Exception e){
+            model.addAttribute("error Message", "상품 등록 중 에러가 발생했습니다.");
+            return "/event/admin/eventCreate";
+        }
 
-        eventService.createEvent(eventFormDto);
         return "redirect:/admin/events";
     }
 

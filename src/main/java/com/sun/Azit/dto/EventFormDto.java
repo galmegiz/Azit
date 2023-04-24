@@ -11,6 +11,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Setter
 @Getter
@@ -42,6 +44,8 @@ public class EventFormDto {
     @FutureOrPresent(message = "이벤트 종료는 오늘 이후여야 합니다.")
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime endDate;
+    private EventImgDto eventImgDto;
+
 
     public EventFormDto(Long id, String title, String titleTag, LocalDateTime recruitDeadLine, int fee, int peopleLimit, String summary, String content, Estatus status, String hashTag, LocalDateTime startDate, LocalDateTime endDate) {
         this.id = id;

@@ -30,6 +30,9 @@ public class Event extends BaseEntity{
     @Setter @Column(nullable = false) private LocalDateTime startDate;
     @Setter @Column(nullable = false) private LocalDateTime endDate;
 
+    @OneToOne(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
+    private EventImg eventImg;
+
 
 
     protected Event(String title, String titleTag, LocalDateTime recruitDeadline, int fee, int peopleLimit, String summary, String content, Estatus status, String hashtag, LocalDateTime startDate, LocalDateTime endDate) {
