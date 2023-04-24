@@ -63,6 +63,7 @@ public class EventService {
                 eventFormDto.getEndDate());
         eventRepository.save(newEvent);
 
+
         EventImg eventImg = new EventImg();
         eventImg.setEvent(newEvent);
 

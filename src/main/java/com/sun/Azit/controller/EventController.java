@@ -35,7 +35,13 @@ public class EventController {
 
         int currentPage = events.getPageable().getPageNumber();
         int startPage = Math.max(currentPage - 2, 0);
-        int endPage = (currentPage + 2 <= 4) ? 4 : Math.min(currentPage + 2, events.getTotalPages() - 1);
+        int endPage;
+        if (events.getTotalPages() - 1 <= 4){
+            endPage = events.getTotalPages() - 1;
+        } else{
+            endPage = (currentPage + 2 <= 4) ? 4 : Math.min(currentPage + 2, events.getTotalPages() - 1);
+        }
+
         model.addAttribute("events", events);
         model.addAttribute("currentPage", currentPage);
         model.addAttribute("startPage", startPage);
@@ -64,7 +70,12 @@ public class EventController {
 
         int currentPage = events.getPageable().getPageNumber();
         int startPage = Math.max(currentPage - 2, 0);
-        int endPage = (currentPage + 2 <= 4) ? 4 : Math.min(currentPage + 2, events.getTotalPages() - 1);
+        int endPage;
+        if (events.getTotalPages() - 1 <= 4){
+            endPage = events.getTotalPages() - 1;
+        } else{
+            endPage = (currentPage + 2 <= 4) ? 4 : Math.min(currentPage + 2, events.getTotalPages() - 1);
+        }
         model.addAttribute("events", events);
         model.addAttribute("currentPage", currentPage);
         model.addAttribute("startPage", startPage);
