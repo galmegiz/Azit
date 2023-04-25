@@ -70,4 +70,12 @@ public class EventImg extends BaseEntity{
     public int hashCode() {
         return Objects.hash(id);
     }
+
+
+
+    public void update(String imgName, String imgUrl, String oriImgName) {
+        this.imgName = imgName;
+        this.imgUrl = imgUrl;
+        this.oriImgName = oriImgName;
+    }
 }

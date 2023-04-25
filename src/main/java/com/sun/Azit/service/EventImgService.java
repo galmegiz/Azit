@@ -1,5 +1,6 @@
 package com.sun.Azit.service;
 
+import com.sun.Azit.dto.EventImgDto;
 import com.sun.Azit.entity.Event;
 import com.sun.Azit.entity.EventImg;
 import com.sun.Azit.repository.EventImgRepository;
@@ -31,7 +32,7 @@ public class EventImgService {
 
         if(!StringUtils.isEmpty(oriImgName)){
             imgName = fileService.uploadFile(eventImgLocation, oriImgName, eventImgFile.getBytes());
-            imgUrl = "/images/item/" + imgName;
+            imgUrl = "/images/event/" + imgName;
         }
         EventImg eventImg = new EventImg();
         eventImg.setImgUrl(imgUrl);
@@ -39,6 +40,30 @@ public class EventImgService {
         eventImg.setOriImgName(oriImgName);
         eventImg.setEvent(event);
         eventImgRepository.save(eventImg);
+    }
+
+    public void updateEventImg(EventImgDto eventImgDto, MultipartFile eventImgFile) throws Exception{
+
+        EventImg eventImg = eventImgRepository.findById(eventImgDto.getId())
+                .orElseThrow(() -> {
+                    throw new EntityNotFoundException("기존 이미지가 서버에 존재하지 않습니다.");}
+                );
+        deleteEventImg(eventImg);
+
+        String oriImgName = eventImgFile.getOriginalFilename();
+        String imgName = "";
+        String imgUrl = "";
+        if(!StringUtils.isEmpty(oriImgName)){
+            imgName = fileService.uploadFile(eventImgLocation, oriImgName, eventImgFile.getBytes());
+            imgUrl = "/images/event/" + imgName;
+        }
+
+        eventImg.update(imgName, imgUrl, oriImgName);
+    }
+
+    public void deleteEventImg(EventImg eventImg) throws Exception{
+        String fileFullUrl = eventImgLocation + "/" + eventImg.getImgName();
+        fileService.deleteFile(fileFullUrl);
     }
 
 }

@@ -62,6 +62,7 @@ public class EventFormDto {
         this.endDate = endDate;
     }
 
+
     public static EventFormDto from(Event event){
        return new EventFormDto(event.getId(),
                event.getTitle(),

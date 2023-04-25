@@ -22,7 +22,26 @@
                 if(errorMessage != null){
                     alert(errorMessage);
                 }
-            })
+
+                bindDomEvent();
+
+            });
+
+            function bindDomEvent(){
+            $(".custom-file-input").on("change", function() {
+                var fileName = $(this).val().split("\\").pop();  //이미지 파일명
+                var fileExt = fileName.substring(fileName.lastIndexOf(".")+1); // 확장자 추출
+                fileExt = fileExt.toLowerCase(); //소문자 변환
+
+                if(fileExt != "jpg" && fileExt != "jpeg" && fileExt != "gif" && fileExt != "png" && fileExt != "bmp"){
+                    alert("이미지 파일만 등록이 가능합니다.");
+                    return;
+                }
+
+                $(this).siblings(".custom-file-label").html(fileName);
+            });
+        }
+
         </script>
 </th:block>
 
@@ -119,9 +138,10 @@
                   </div>
                 </th:block>
                 <div class="mb-3 row">
-                    <label th:for="eventImgFile" class="col-md-2 col-form-label">이미지 파일</label>
+                    <label th:for="eventImgFile"   class="custom-file-label col-md-2 col-form-label">이미지 파일</label>
                     <div class="col-md-10">
-                        <input type="file" class="form-control" name="eventImgFile" id="eventImgFile" placeholder="">
+                        <input type="file" th:text="${eventFormDto.eventImgDto != null ? eventFormDto.eventImgDto.oriImgName : '이미지 파일'}" class="form-control custom-file-input" name="eventImgFile" id="eventImgFile">
+                        <input type="hidden" th:field="${eventFormDto.eventImgDto.id}">
                         <p th:if="${#fields.hasErrors('eventImgDto')}" th:errors="*{eventImgDto}" class="fieldError">입력값이 잘못됐습니다.</p>
                     </div>
                 </div>

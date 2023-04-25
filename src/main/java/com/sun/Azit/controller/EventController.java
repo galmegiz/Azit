@@ -108,7 +108,7 @@ public class EventController {
 
     @Transactional(readOnly = true)
     @GetMapping("/admin/events/{id}/form")
-    public String getUpdateEventFrom(@PathVariable Long id, Model model){
+    public String getUpdateEventForm(@PathVariable Long id, Model model){
         if(id == null){
             model.addAttribute("errorMessage", "게시글 번호를 입력해주세요");
             return "/event/admin/eventList";
@@ -126,7 +126,8 @@ public class EventController {
 
     @PostMapping("/admin/events/{id}")
     public String updateEvent(@PathVariable Long id, @Valid EventFormDto eventFormDto,
-                              BindingResult bindingResult, Model model){
+                              BindingResult bindingResult, Model model,
+                              @RequestParam("eventImgFile") MultipartFile eventImgFile){
         if(id == null){
             model.addAttribute("errorMessage", "게시글 번호를 입력해주세요");
             return "/event/admin/eventList";
@@ -137,7 +138,7 @@ public class EventController {
 
         Long updatedEventId = 0L;
         try{
-            updatedEventId = eventService.updateEvent(id, eventFormDto);
+            updatedEventId = eventService.updateEvent(id, eventFormDto, eventImgFile);
         }catch (Exception e){
             model.addAttribute("errorMessage", "이벤트 수정 중 에러가 발생하였습니다.");
             return "redirect:/events";
