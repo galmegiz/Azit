@@ -17,6 +17,12 @@
     .table{
       text-align: center;
     }
+     .searchbar{
+      float: right;
+    }
+
+
+    </style>
   </style>
 </th:block>
 <th:block layout:fragment="script">
@@ -37,6 +43,24 @@
     }
   });
 
+$(document).ready(function() {
+  let searchType = '';
+  let searchValue = '';
+
+  $('.dropdown-item').click(function() {
+    searchType = $(this).text();
+  });
+
+  $('#searchInput').on('input', function() {
+    searchValue = $(this).val();
+  });
+
+  $('#searchBtn').click(function() {
+    const queryString = `?type=${searchType}&value=${searchValue}`;
+    const url = `/admin/events${queryString}`;
+    window.location.href = url;
+  });
+});
    </script>
 </th:block>
 
@@ -99,11 +123,58 @@
           </div>
         </div>
       </div>
+    <div class="container-xxl flex-grow-1 container-p-y">
+      <div class = "card mb-4 col-md-6 searchbar">
+        <form method="get" action="/admin/events">
+          <div class="input-group">
+
+            <select class="form-select" name="searchType">
+              <option value="TITLE">제목</option>
+              <option value="CONTENT">내용</option>
+              <option value="FEE">가격</option>
+              <option value="STATUS">상태</option>
+              <option value="PEOPLE_LIMIT">인원수</option>
+            </select>
+            <input type="text" name="searchValue" class="form-control">
+            <button class="btn btn-outline-success" type="submit">Search</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
   </div>
+  <div class="card mb-4 col-md-6 searchbar" style="justify-content: center!important;">
+    <form method="get" action="/admin/events">
+      <div class="input-group">
 
-
+        <select class="form-select" name="searchType">
+          <option value="TITLE">제목</option>
+          <option value="CONTENT">내용</option>
+          <option value="FEE">가격</option>
+          <option value="STATUS">상태</option>
+          <option value="PEOPLE_LIMIT">인원수</option>
+        </select>
+        <input type="text" name="searchValue" class="form-control">
+        <button class="btn btn-outline-success" type="submit">Search</button>
+      </div>
+    </form>
+  </div>
   <!-- paging -->
   <nav aria-label="Page navigation example">
+    <form method="get" action="/admin/events">
+      <div class="input-group">
+
+        <select class="form-select" name="searchType">
+          <option value="TITLE">제목</option>
+          <option value="CONTENT">내용</option>
+          <option value="FEE">가격</option>
+          <option value="STATUS">상태</option>
+          <option value="PEOPLE_LIMIT">인원수</option>
+        </select>
+        <input type="text" name="searchValue" class="form-control">
+        <button class="btn btn-outline-success" type="submit">Search</button>
+      </div>
+    </form>
     <ul class="pagination justify-content-center">
       <li class="page-item">
         <a class="page-link" th:href="@{/admin/events(page=0)}" aria-label="Previous">

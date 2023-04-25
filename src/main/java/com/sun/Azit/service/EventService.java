@@ -1,6 +1,7 @@
 package com.sun.Azit.service;
 
 import com.sun.Azit.constant.Estatus;
+import com.sun.Azit.constant.SearchType;
 import com.sun.Azit.dto.EventFormDto;
 import com.sun.Azit.dto.EventImgDto;
 import com.sun.Azit.entity.Event;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import org.thymeleaf.util.StringUtils;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.function.Supplier;
@@ -36,6 +38,22 @@ public class EventService {
             return eventDto;
         });
     }
+
+    public Page<EventFormDto> getEventLists(SearchType searchType, String searchValue, Pageable pageable) {
+        if(StringUtils.isEmptyOrWhitespace(searchValue)){
+            return getEventLists(pageable);
+        }
+
+        return switch (searchType){
+            case TITLE -> eventRepository.findByTitleContaining(searchValue,pageable).map(EventFormDto::from);
+            case FEE -> eventRepository.findByFeeLessThanEqual(Integer.parseInt(searchValue), pageable).map(EventFormDto::from);
+            case STATUS -> eventRepository.findByStatus(searchValue,pageable).map(EventFormDto::from);
+            case CONTENT -> eventRepository.findByContentContaining(searchType, pageable).map(EventFormDto::from);
+            case PEOPLE_LIMIT -> eventRepository.findByPeopleLimitLessThanEqual(Integer.parseInt(searchValue),pageable).map(EventFormDto::from);
+        };
+    }
+
+
     public Event createEvent(EventFormDto eventFormDto, MultipartFile itemImg) throws Exception{
         Event newEvent = Event.of(eventFormDto.getTitle(),
                 eventFormDto.getTitleTag(),
@@ -85,4 +103,6 @@ public class EventService {
                 });
         eventRepository.delete(event);
     }
+
+
 }

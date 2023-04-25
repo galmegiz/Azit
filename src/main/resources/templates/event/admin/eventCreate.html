@@ -140,7 +140,7 @@
                 <div class="mb-3 row">
                     <label th:for="eventImgFile"   class="custom-file-label col-md-2 col-form-label">이미지 파일</label>
                     <div class="col-md-10">
-                        <input type="file" th:text="${eventFormDto.eventImgDto != null ? eventFormDto.eventImgDto.oriImgName : '이미지 파일'}" class="form-control custom-file-input" name="eventImgFile" id="eventImgFile">
+                        <input type="file" th:text="${eventFormDto.eventImgDto != null ? eventFormDto.eventImgDto.oriImgName : ''}" class="form-control custom-file-input" name="eventImgFile" id="eventImgFile">
                         <input type="hidden" th:field="${eventFormDto.eventImgDto.id}">
                         <p th:if="${#fields.hasErrors('eventImgDto')}" th:errors="*{eventImgDto}" class="fieldError">입력값이 잘못됐습니다.</p>
                     </div>

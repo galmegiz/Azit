@@ -43,6 +43,13 @@ public class EventImgService {
     }
 
     public void updateEventImg(EventImgDto eventImgDto, MultipartFile eventImgFile) throws Exception{
+        String oriImgName = eventImgFile.getOriginalFilename();
+        String imgName = "";
+        String imgUrl = "";
+
+        if(StringUtils.isEmpty(oriImgName)){
+            return;
+        }
 
         EventImg eventImg = eventImgRepository.findById(eventImgDto.getId())
                 .orElseThrow(() -> {
@@ -50,9 +57,7 @@ public class EventImgService {
                 );
         deleteEventImg(eventImg);
 
-        String oriImgName = eventImgFile.getOriginalFilename();
-        String imgName = "";
-        String imgUrl = "";
+
         if(!StringUtils.isEmpty(oriImgName)){
             imgName = fileService.uploadFile(eventImgLocation, oriImgName, eventImgFile.getBytes());
             imgUrl = "/images/event/" + imgName;

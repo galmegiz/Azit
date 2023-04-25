@@ -1,6 +1,7 @@
 package com.sun.Azit.controller;
 
 import com.sun.Azit.constant.Estatus;
+import com.sun.Azit.constant.SearchType;
 import com.sun.Azit.dto.EventFormDto;
 import com.sun.Azit.entity.Event;
 import com.sun.Azit.service.EventService;
@@ -64,9 +65,12 @@ public class EventController {
 
     @Transactional(readOnly = true)
     @GetMapping("/admin/events")
-    public String getAdminEventList(@PageableDefault Pageable pageableQ, Model model){
+    public String getAdminEventList(
+            @RequestParam(required = false)SearchType searchType,
+            @RequestParam(required = false)String searchValue,
+            @PageableDefault Pageable pageableQ, Model model){
         Pageable pageable = PageRequest.of(pageableQ.getPageNumber() >= 0 ? pageableQ.getPageNumber() : 0, 10, Sort.by("createdAt").descending());
-        Page<EventFormDto> events = eventService.getEventLists(pageable);
+        Page<EventFormDto> events = eventService.getEventLists(searchType, searchValue, pageable);
 
         int currentPage = events.getPageable().getPageNumber();
         int startPage = Math.max(currentPage - 2, 0);
