@@ -36,6 +36,8 @@ public class QEvent extends EntityPathBase<Event> {
 
     public final QEventImg eventImg;
 
+    public final ListPath<EventMember, QEventMember> eventMembers = this.<EventMember, QEventMember>createList("eventMembers", EventMember.class, QEventMember.class, PathInits.DIRECT2);
+
     public final NumberPath<Integer> fee = createNumber("fee", Integer.class);
 
     public final StringPath hashtag = createString("hashtag");

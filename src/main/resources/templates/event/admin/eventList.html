@@ -94,7 +94,7 @@ $(document).ready(function() {
               <th:block th:each="event:${events}">
               <tbody class="table-border-bottom-0">
                 <td th:text="${event.id}">번호</td>
-                <td><a th:href="@{/events/{id}(id = ${event.id})}"><strong th:text="${event.title}">제목</strong></a></td>
+                <td><a th:href="@{/admin/events/{id}(id = ${event.id})}"><strong th:text="${event.title}">제목</strong></a></td>
                 <td th:text="${event.fee}">가격</td>
                 <td th:text="${event.peopleLimit}">신청인원</td>
                 <td>

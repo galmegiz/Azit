@@ -1,5 +1,6 @@
 package com.sun.Azit.repository;
 
+import com.sun.Azit.constant.Estatus;
 import com.sun.Azit.constant.SearchType;
 import com.sun.Azit.dto.EventFormDto;
 import com.sun.Azit.entity.Event;
@@ -16,7 +17,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     Page<Event> findByFeeLessThanEqual(int parseInt, Pageable pageable);
 
-    Page<Event> findByStatus(String searchValue, Pageable pageable);
+    Page<Event> findByStatus(Estatus estatus, Pageable pageable);
 
     Page<Event> findByContentContaining(SearchType searchType, Pageable pageable);
 

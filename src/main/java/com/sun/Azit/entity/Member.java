@@ -6,6 +6,8 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import com.sun.Azit.constant.Role;
@@ -13,7 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 
 @Getter
-@ToString
+@ToString(exclude = "eventMembers")
 @Table(name="member")
 @NoArgsConstructor
 @Entity
@@ -23,6 +25,10 @@ public class Member extends BaseTimeEntity{
     @Setter @Column(nullable = false, unique = true) private String email;
     @Setter @Column(nullable = false) private String password;
     @Setter @Enumerated(EnumType.STRING) private Role role;
+
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<EventMember> eventMembers = new ArrayList<>();
+
 
     protected Member(String name, String email, String password, Role role) {
         this.name = name;

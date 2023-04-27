@@ -9,10 +9,12 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Getter
-@ToString
+@ToString(exclude = {"eventImg", "eventMembers"})
 @Table(name = "event")
 @NoArgsConstructor
 @Entity
@@ -32,6 +34,10 @@ public class Event extends BaseEntity{
 
     @OneToOne(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
     private EventImg eventImg;
+
+
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<EventMember> eventMembers = new ArrayList<>();
 
 
 

@@ -46,6 +46,9 @@
     .blog_details{padding-top:0px !important;}
     .button:hover{background: orange; border: 1px solid white; color: white !important; }
     .posts-list{padding-top:20px !important;}
+        .table{
+      text-align: center;
+    }
 
 
 
@@ -67,6 +70,35 @@
     });
     }
   });
+    $(document).on("click", 'button[id^="cancel"]', function(){
+    var id = $(this).attr("id").substr(6)
+    if(confirm("이벤트를 취소하겠습니까?")){
+    $.ajax({
+      url: "/events/cancel?eventId=" + [[${eventFormDto.id}]] + "&memberId=" + id,
+      method: "DELETE",
+      dataType: "text",
+      success: function(data) {
+        alert(data);
+        location.reload(true);
+      }
+    });
+    }
+  });
+      $(document).on("click", 'span[id^="paymentupdate"]', function(){
+    var id = $(this).attr("id").substr(13)
+    if(confirm("지불 여부를 변경하시겠습니까?")){
+    $.ajax({
+      url: "/events/payment?eventId=" + [[${eventFormDto.id}]] + "&memberId=" + id,
+      method: "PATCH",
+      dataType: "text",
+      success: function(data) {
+        alert(data);
+        location.reload(true);
+      }
+    });
+    }
+  });
+
     </script>
 </th:block>
 
@@ -81,7 +113,7 @@
                         <img class="img-upcomingevent" th:src="${eventFormDto.eventImgDto.imgUrl}" alt="Card image cap">
                     </div>
                 </div>
-                <div class="col-lg-6 mb-6 mb-lg-0 event_col event_desc">
+                <div class="col-lg-6 mb-6 mb-lg-0">
                      <span th:text="${eventFormDto.status}" th:classappend="${eventFormDto.status.name() == 'OPEN' ? 'badge bg-label-success' : (eventFormDto.status.name() == 'CLOSE' ? 'badge bg-label-dark' : 'badge bg-label-warning')}">
                      </span>
                     <h2 class="mb-4">
@@ -90,11 +122,10 @@
                     <input type="hidden" value="${eventFormDto.id}" name="eventId">
                     <p th:text="${eventFormDto.summary}">요약</p>
                     <p>참가 비용 : [[${eventFormDto.fee}]] 원</p>
-                    <p>참가 인원 : [[${eventFormDto.peopleLimit}]]명</p>
-                    <div class="text-center">
-                        <a th:if="${eventFormDto.status.name()} != 'CLOSE'" href="" id="apply" class="btn rounded-pill btn-warning">이벤트 참여하기</a>
-                        <button th:unless="${eventFormDto.status.name()} != 'CLOSE'"  class="btn rounded-pill btn-secondary">모집 마감</button>
-                    </div>
+                    <p>신청 인원 / 참가 인원 : [[${eventMemberDto.totalElements}]]명 / [[${eventFormDto.peopleLimit}]]명</p>
+                    <p>이벤트 기간 : [[${eventFormDto.startDate}]] ~ [[${eventFormDto.endDate}]]</p>
+                    <p>모집 마감일 : [[${eventFormDto.recruitDeadline}]]</p>
+
                 </div>
 
             </div>
@@ -105,40 +136,42 @@
     </div>
     <section class="blog_area single-post-area">
         <div class="container">
-            <div class="row">
-                <div class="col-lg-4">
-                    <div class="blog_right_sidebar">
-                        <aside class="single_sidebar_widget post_category_widget">
-                            <div class="sidebar_list">
-                                <h4 class="widget_title">이벤트 기간</h4>
-                                <p>
-                                    [[${eventFormDto.startDate}]]
-                                    ~
-                                    [[${eventFormDto.endDate}]]
-                                </p>
-                            </div>
-                            <div class="sidebar_list">
-                                <h4 class="widget_title">모집마감일</h4>
-                                <p>
-                                    [[${eventFormDto.recruitDeadline}]]
-                                </p>
-                            </div>
-                            <div class="sidebar_list">
-                                <h4 class="widget_title">문의</h4>
-                                <p><img src="/resources/lorahost-master/img/gmail.png" style="width:20px ;height: auto; margin-right:5px;"/>메일 : hyd.busan@gmail.com</p>
-                                <p><img src="/resources/lorahost-master/img/kakao.png" style="width:20px ;height: auto; margin-right:5px;"/>카톡채널 : 친구찾기>'홍예당'검색>채널 추가</p>
-                            </div>
-                        </aside>
-                    </div>
-                </div>
-                <div class="col-lg-8 posts-list">
-                    <div class="single-post">
+
+                    <div class="single-post posts-list">
                         <div class="blog_details">
-                            <p class="excert" th:text="${eventFormDto.content}">
-                                내용
-                            </p>
-                        </div>
-                    </div>
+                            <div class="card">
+                                <h5 class="card-header">이벤트 신청자 명단</h5>
+                                <div class="table-responsive text-nowrap">
+                                    <table class="table table-striped">
+                                        <thead>
+                                        <tr>
+                                            <th>이름</th>
+                                            <th>이메일</th>
+                                            <th>납부여부</th>
+                                            <th>권한</th>
+                                            <th>이벤트 취소하기</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody class="table-border-bottom-0">
+                                        <th:block th:each="eventMember:${eventMemberDto}">
+                                            <tr>
+                                            <td th:text="${eventMember.member.name}"></td>
+                                            <td th:text="${eventMember.member.email}"></td>
+                                            <td>
+                                                <span th:id="'paymentupdate' + ${eventMember.member.id}" th:text="${eventMember.paymentStatus}" th:classappend="${eventMember.paymentStatus.name() == 'UNPAID' ? 'badge bg-label-danger' : 'badge bg-label-success'}">
+                                                </span>
+                                            </td>
+                                            <td th:text="${eventMember.memberRole.name()}"></td>
+                                                <td><button th:id="'cancel' + ${eventMember.member.id}" class="btn btn-sm rounded-pill btn-warning">이벤트 취소</button></td>
+                                            </tr>
+
+                                        </th:block>
+                                        </tbody>
+                                    </table>
+
+                                </div>
+                            </div>
+
 
                 </div>
             </div>
