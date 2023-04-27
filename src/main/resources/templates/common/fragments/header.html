@@ -1,9 +1,11 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
 <div class="header header_area" th:fragment="header">
     <nav class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme" id="layout-navbar">
         <div class="container-fluid">
-            <a class="navbar-brand" href="/members/register">Navbar</a>
+            <a class="navbar-brand" href="/members/register">MyAzit</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -12,22 +14,13 @@
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="/events">이벤트</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/members/register">회원가입</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/admin/events/form">이벤트 생성</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/admin/events/">어드민 페이지</a>
-                    </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Dropdown
+                            이벤트 관리
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">Action</a></li>
-                            <li><a class="dropdown-item" href="#">Another action</a></li>
+                            <li><a class="dropdown-item" sec:authorize="isAuthenticated()" href="/admin/events/">이벤트 현황</a></li>
+                            <li><a class="dropdown-item" sec:authorize="isAuthenticated()" href="/admin/events/form">이벤트 생성</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="#">Something else here</a></li>
                         </ul>
@@ -36,10 +29,8 @@
                         <a class="nav-link disabled">Disabled</a>
                     </li>
                 </ul>
-                <form class="d-flex" role="search">
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-success" type="submit">Search</button>
-                </form>
+                <a class="nav-link" sec:authorize="isAnonymous()" th:href="@{/members/login}">로그인</a>
+                <a class="nav-link" sec:authorize="isAuthenticated()" href="/logout">로그아웃</a>
             </div>
         </div>
     </nav>

@@ -2,6 +2,7 @@ package com.sun.Azit.controller;
 
 import com.sun.Azit.constant.Role;
 import com.sun.Azit.dto.MemberFormDto;
+import com.sun.Azit.dto.MemberLoginDto;
 import com.sun.Azit.entity.Member;
 import com.sun.Azit.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,12 @@ public class MemberController {
     public String getMemberRegister(Model model) {
         model.addAttribute("memberFormDto", new MemberFormDto());
         return "member/memberRegister";
+    }
+
+    @GetMapping("/members/login")
+    public String getMemberLogin(Model model) {
+        model.addAttribute("memberFormDto", new MemberLoginDto());
+        return "member/memberLogin";
     }
 
     @PostMapping("/members/register")

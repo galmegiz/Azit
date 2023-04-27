@@ -65,12 +65,15 @@ $(document).ready(function() {
 </th:block>
 
 <th:block layout:fragment="content">
-  <section class="py-5 text-center container">
-    <div class="row py-lg-5">
-      <p> albaum </p>
-    </div>
-  </section>
+
   <div class="content-wrapper container">
+    <div class="p-4 p-md-5 mb-4 rounded text-bg-dark">
+      <div class="col-md-6 px-0">
+        <h1 class="display-4 fst-italic">Title of a longer featured blog post</h1>
+        <p class="lead my-3">Multiple lines of text that form the lede, informing new readers quickly and efficiently about what’s most interesting in this post’s contents.</p>
+        <p class="lead mb-0"><a href="#" class="text-white fw-bold">Continue reading...</a></p>
+      </div>
+    </div>
     <div class="container-xxl flex-grow-1 container-p-y">
         <!--card grid start -->
         <div class="card">
@@ -143,38 +146,9 @@ $(document).ready(function() {
     </div>
 
   </div>
-  <div class="card mb-4 col-md-6 searchbar" style="justify-content: center!important;">
-    <form method="get" action="/admin/events">
-      <div class="input-group">
 
-        <select class="form-select" name="searchType">
-          <option value="TITLE">제목</option>
-          <option value="CONTENT">내용</option>
-          <option value="FEE">가격</option>
-          <option value="STATUS">상태</option>
-          <option value="PEOPLE_LIMIT">인원수</option>
-        </select>
-        <input type="text" name="searchValue" class="form-control">
-        <button class="btn btn-outline-success" type="submit">Search</button>
-      </div>
-    </form>
-  </div>
   <!-- paging -->
   <nav aria-label="Page navigation example">
-    <form method="get" action="/admin/events">
-      <div class="input-group">
-
-        <select class="form-select" name="searchType">
-          <option value="TITLE">제목</option>
-          <option value="CONTENT">내용</option>
-          <option value="FEE">가격</option>
-          <option value="STATUS">상태</option>
-          <option value="PEOPLE_LIMIT">인원수</option>
-        </select>
-        <input type="text" name="searchValue" class="form-control">
-        <button class="btn btn-outline-success" type="submit">Search</button>
-      </div>
-    </form>
     <ul class="pagination justify-content-center">
       <li class="page-item">
         <a class="page-link" th:href="@{/admin/events(page=0)}" aria-label="Previous">
