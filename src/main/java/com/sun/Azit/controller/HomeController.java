@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class HomeController {
     @GetMapping("/")
     public String home(Model model){
-        return "event/eventList";
+        return "redirect:/events";
     }
 
     @GetMapping("/main")
