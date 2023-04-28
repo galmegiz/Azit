@@ -27,17 +27,27 @@ public class MemberFormDto {
     @Length(min = 8, max = 16, message = "비밀번호는 8자 이상, 16자 이하입니다")
     private String password;
 
+    private Role role;
+
     public MemberFormDto(String name, String email, String password){
         this.name = name;
         this.email = email;
         this.password = password;
     }
 
+    public MemberFormDto(String name, String email, String password, Role role){
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+    }
+
     public static MemberFormDto from(Member member) {
         return new MemberFormDto(
                 member.getName(),
                 member.getEmail(),
-                member.getPassword());
+                member.getPassword(),
+                member.getRole());
     }
 
     public Member toEntity(){

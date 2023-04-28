@@ -14,13 +14,13 @@
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="/events">이벤트</a>
                     </li>
-                    <li class="nav-item dropdown">
+                    <li class="nav-item dropdown" sec:authorize="hasRole('ADMIN')">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             이벤트 관리
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" sec:authorize="isAuthenticated()" href="/admin/events/">이벤트 현황</a></li>
-                            <li><a class="dropdown-item" sec:authorize="isAuthenticated()" href="/admin/events/form">이벤트 생성</a></li>
+                            <li><a class="dropdown-item" href="/admin/events/">이벤트 현황</a></li>
+                            <li><a class="dropdown-item" href="/admin/events/form">이벤트 생성</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="#">Something else here</a></li>
                         </ul>
@@ -30,7 +30,22 @@
                     </li>
                 </ul>
                 <a class="nav-link" sec:authorize="isAnonymous()" th:href="@{/members/login}">로그인</a>
-                <a class="nav-link" sec:authorize="isAuthenticated()" href="/logout">로그아웃</a>
+               <!-- <th:block sec:authorize="isAuthenticated()">-->
+                <ul sec:authorize="isAuthenticated()" class="navbar-nav mb-2 mb-lg-0" >
+                    <li class="nav-item dropdown">
+                        <a th:text="${#authentication.name} + 님" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            회원정보
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" th:href="@{/members/mypage/{userEmail}(userEmail = ${#authentication.name})}">정보 변경</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/logout">로그아웃</a></li>
+                        </ul>
+                    </li>
+                </ul>
+               <!-- </th:block>-->
+              <!--  <a class="nav-link" sec:authorize="isAuthenticated()" href="/logout">로그아웃</a>-->
+                <!--<a class="nav-link" th:text="${#authentication.name}" th:href="@{/members/mypage/{userEmail}(userEmail = ${#authentication.name})}"></a>-->
             </div>
         </div>
     </nav>

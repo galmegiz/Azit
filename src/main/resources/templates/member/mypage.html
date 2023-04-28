@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layouts/defaultLayout}">
+
+<th:block layout:fragment="css">
+    <style>
+    @media (min-width: 1000px){
+    div.text-align{text-align:left!important; };
+
+    }
+    @media (max-width: 1000px){
+    div.text-align{text-align:center!important;};
+
+    }
+
+    @media (min-width:990px){
+    img.img-upcomingevent{ width: 400px;
+    height: auto;}
+    .event_desc{height:400px;}
+
+    }
+
+    @media (max-width:990px){
+    img.img-upcomingevent{ width: 400px;
+    height: auto; margin-bottom:50px;}
+
+    }
+
+    @media (max-width:500px){
+    img.img-upcomingevent{ width: 300px;
+    height: auto; margin-bottom:50px;}
+    }
+
+    .eventview{padding-bottom:30px;}
+    div.section-intro{padding-bottom: 20px;}
+
+    section.middle {border-bottom:1px solid #dbd9e6;}
+    aside.single_sidebar_widget {padding-top:20px !important;}
+    aside.single_sidebar_widget p { font-size:14px; line-height:20px; color:#888888; }
+    h4.widget_title {margin-bottom: 10px !important; color:#16a085;}
+    .sidebar_list{border-bottom: 1px solid #f0e9ff; margin-bottom:10px;}
+    .blog_right_sidebar .widget_title:after{border-bottom:0px;}
+    .blog_right_sidebar .single_sidebar_widget {background: white; margin-bottom:0px;}
+    .blog_area{margin-bottom:20px;}
+    .blog_details{padding-top:0px !important;}
+    .button:hover{background: orange; border: 1px solid white; color: white !important; }
+    .posts-list{padding-top:20px !important;}
+        .table{
+      text-align: center;
+    }
+
+
+
+    </style>
+</th:block>
+<th:block layout:fragment="script">
+    <script>
+  $(document).on("click", 'button[id="submit"]', function(){
+    const data = {
+        name: $('#name').val(),
+        email: $('#email').val(),
+        password: $('#password').val()
+    };
+    if(confirm("정보를 변경하시겠습니까?")){
+    $.ajax({
+      url: "/members/mypage/" + data.email,
+      method: "PATCH",
+      contentType : 'application/json; charset=utf-8',
+      data: JSON.stringify(data)
+    }).done(function(result){
+        if(result){
+            alert("정보 수정이 완료됐습니다.");
+            location.reload(true);
+        }else{
+            alert("정보 수정중 오류가 발생했습니다.");
+        }
+
+    }).fail(function(error){
+              alert(JSON.stringify(error));
+        });
+    }
+  });
+    $(document).on("click", 'button[id="cancel"]', function(){
+    var memberEmail = $('#email').val();;
+    if(confirm("회원을 탈퇴하시겠습니까?")){
+    $.ajax({
+      url: "/members/mypage/" + memberEmail,
+      method: "DELETE",
+      contentType : "text"
+    }).done(function(result){
+        if(result){
+            alert("정보 수정이 완료됐습니다.");
+            window.location.href=result;
+        }else{
+            alert("정보 수정중 오류가 발생했습니다.");
+        }
+
+    }).fail(function(error){
+              alert(JSON.stringify(error));
+        });
+    }
+  });
+
+    </script>
+</th:block>
+
+<th:block layout:fragment="content">
+    <div class="content-wrapper">
+        <div class="container-xxl flex-grow-1 container-p-y">
+            <h4 class="fw-bold py-3 mb-4">
+                <span class="text-muted fw-light">내 프로필 /</span> 계정 설정
+            </h4>
+            <div class="row">
+                <div class="col-md-12">
+                    <ul class="nav nav-pills flex-column flex-md-row mb-3">
+                        <li class="nav-item"><a class="nav-link active" href="javascript:void(0);"><i class="bx bx-user me-1"></i> 계정</a></li>
+                        <li class="nav-item"><a class="nav-link" href="pages-account-settings-notifications.html"><i class="bx bx-bell me-1"></i> Notifications</a></li>
+                        <li class="nav-item"><a class="nav-link" href="pages-account-settings-connections.html"><i class="bx bx-link-alt me-1"></i> Connections</a></li>
+                    </ul>
+
+                    <div class="card mb-4">
+                        <h5 class="card-header">Profile Details</h5>
+                        <!-- Account -->
+                        <div class="card-body">
+                            <div class="d-flex align-items-start align-items-sm-center gap-4">
+                                <img src="../assets/img/avatars/1.png" alt="user-avatar" class="d-block rounded" height="100" width="100" id="uploadedAvatar">
+                                <div class="button-wrapper">
+                                    <label for="upload" class="btn btn-primary me-2 mb-4" tabindex="0">
+                                        <span class="d-none d-sm-block">Upload new photo</span>
+                                        <i class="bx bx-upload d-block d-sm-none"></i>
+                                        <input type="file" id="upload" class="account-file-input" hidden="" accept="image/png, image/jpeg">
+                                    </label>
+                                    <button type="button" class="btn btn-outline-secondary account-image-reset mb-4">
+                                        <i class="bx bx-reset d-block d-sm-none"></i>
+                                        <span class="d-none d-sm-block">Reset</span>
+                                    </button>
+
+                                    <p class="text-muted mb-0">Allowed JPG, GIF or PNG. Max size of 800K</p>
+                                </div>
+                            </div>
+                        </div>
+                        <hr class="my-0">
+                        <div class="card-body">
+                            <form th:object="${memberFormDto}">
+                                <div class="row">
+                                    <div class="mb-3 col-md-6">
+                                        <label for="email" class="form-label">이메일</label>
+                                        <input class="form-control" th:field="*{email}" type="email" id="email" name="email" disabled>
+                                    </div>
+                                    <div class="mb-3 col-md-6">
+                                        <label for="role" class="form-label">권한</label>
+                                        <input class="form-control"  th:field="*{role}" type="text" id="role" name="role" disabled >
+                                    </div>
+                                    <div class="mb-3 col-md-6">
+                                        <label for="name" class="form-label">이름</label>
+                                        <input class="form-control" th:field="*{name}" type="text" id="name" name="name" autofocus="">
+                                    </div>
+                                    <div class="mb-3 col-md-6">
+                                        <label for="password" class="form-label">패스워드</label>
+                                        <input class="form-control"  th:field="*{password}" type="password" id="password" name="password" >
+                                    </div>
+
+                                    <!--<div class="mb-3 col-md-6">
+                                        <label for="role" class="form-label">권한</label>
+                                        <select id="role" th:field="*{role}" class="select2 form-select">
+                                            <option value="">일반 사용자</option>
+                                            <option value="">관리자</option>
+                                        </select>
+                                    </div>-->
+
+
+                                </div>
+                                <div class="mt-2">
+                                    <button type="submit" id="submit" class="btn btn-primary me-2">수정하기</button>
+                                </div>
+                            </form>
+                        </div>
+                        <!-- /Account -->
+                    </div>
+                    <div class="card">
+                        <h5 class="card-header">회원 탈퇴</h5>
+                        <div class="card-body">
+                            <div class="mb-3 col-12 mb-0">
+                                <div class="alert alert-warning">
+                                    <h6 class="alert-heading fw-bold mb-1">정말 회원을 탈퇴하시겠습니까?</h6>
+                                    <p class="mb-0">회원 탈퇴 시 각종 이벤트, 클럽 참여 정보가 삭제됩니다.</p>
+                                </div>
+                            </div>
+                            <form id="formAccountDeactivation" onsubmit="return false">
+                                <button type="submit" id="cancel" class="btn btn-danger deactivate-account">회원 탈퇴</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+        </div>
+        <!-- / Content -->
+
+
+
+
+        <!-- Footer -->
+        <footer class="content-footer footer bg-footer-theme">
+            <div class="container-xxl d-flex flex-wrap justify-content-between py-2 flex-md-row flex-column">
+                <div class="mb-2 mb-md-0">
+                    © <script>
+      document.write(new Date().getFullYear())
+      </script>2023
+                    , made with ❤️ by <a href="https://themeselection.com" target="_blank" class="footer-link fw-bolder">ThemeSelection</a>
+                </div>
+                <div>
+
+                    <a href="https://themeselection.com/license/" class="footer-link me-4" target="_blank">License</a>
+                    <a href="https://themeselection.com/" target="_blank" class="footer-link me-4">More Themes</a>
+
+                    <a href="https://themeselection.com/demo/sneat-bootstrap-html-admin-template/documentation/" target="_blank" class="footer-link me-4">Documentation</a>
+
+                    <a href="https://github.com/themeselection/sneat-html-admin-template-free/issues" target="_blank" class="footer-link me-4">Support</a>
+
+
+                </div>
+            </div>
+        </footer>
+        <!-- / Footer -->
+
+
+        <div class="content-backdrop fade"></div>
+    </div>
+</th:block>>
+</html>
