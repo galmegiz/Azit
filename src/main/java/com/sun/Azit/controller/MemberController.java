@@ -52,7 +52,7 @@ public class MemberController {
             model.addAttribute("errorMessage", e.getMessage());
             return "member/memberRegister";
         }
-        return "redirect:/";
+        return "redirect:member/login";
     }
 
     @Transactional(readOnly = true)
@@ -61,12 +61,12 @@ public class MemberController {
                             @AuthenticationPrincipal UserDetails userDetails,
                             Model model){
         if(userDetails == null){
-            return "/member/memberLogin";
+            return "member/memberLogin";
         }
         String email = userDetails.getUsername();
         MemberFormDto memberFormDto = memberService.getMember(memberEmail, email);
         model.addAttribute("memberFormDto", memberFormDto);
-        return "/member/mypage";
+        return "member/mypage";
     }
 
     @PatchMapping("/members/mypage/{memberEmail}")

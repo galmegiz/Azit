@@ -57,7 +57,7 @@ public class EventController {
         model.addAttribute("currentPage", currentPage);
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
-        return "/event/eventList";
+        return "event/eventList";
     }
 
     @Transactional(readOnly = true)
@@ -68,9 +68,9 @@ public class EventController {
             model.addAttribute("eventFormDto", eventFormDto);
         }catch (IllegalStateException e){
             model.addAttribute("errorMessage", e.getMessage());
-            return "/event/eventList";
+            return "event/eventList";
         }
-        return "/event/eventDetail";
+        return "event/eventDetail";
     }
 
     @Transactional(readOnly = true)
@@ -94,13 +94,13 @@ public class EventController {
         model.addAttribute("currentPage", currentPage);
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
-        return "/event/admin/eventList";
+        return "event/admin/eventList";
     }
 
     @GetMapping("/admin/events/form")
     public String getEventForm(Model model){
         model.addAttribute("eventFormDto", new EventFormDto());
-        return "/event/admin/eventCreate";
+        return "event/admin/eventCreate";
     }
 
     @PostMapping("/admin/events/form")
@@ -108,7 +108,7 @@ public class EventController {
                               BindingResult bindingResult, Model model,
                               @RequestParam("eventImgFile")MultipartFile eventImgFile) {
         if (bindingResult.hasErrors()) {
-            return "/event/admin/eventCreate";
+            return "event/admin/eventCreate";
         }
         try{
             eventService.createEvent(eventFormDto, eventImgFile);
@@ -117,7 +117,7 @@ public class EventController {
             return "/event/admin/eventCreate";
         }
 
-        return "redirect:/admin/events";
+        return "redirect:admin/events";
     }
 
     @Transactional(readOnly = true)
@@ -125,7 +125,7 @@ public class EventController {
     public String getUpdateEventForm(@PathVariable Long id, Model model){
         if(id == null){
             model.addAttribute("errorMessage", "게시글 번호를 입력해주세요");
-            return "/event/admin/eventList";
+            return "event/admin/eventList";
         }
 
         try{
@@ -133,9 +133,9 @@ public class EventController {
             model.addAttribute("eventFormDto", eventFormDto);
         }catch (IllegalStateException e){
             model.addAttribute("errorMessage", e.getMessage());
-            return "/event/admin/eventList";
+            return "event/admin/eventList";
         }
-        return "/event/admin/eventCreate";
+        return "event/admin/eventCreate";
     }
 
     @PostMapping("/admin/events/{id}")
@@ -144,10 +144,10 @@ public class EventController {
                               @RequestParam("eventImgFile") MultipartFile eventImgFile){
         if(id == null){
             model.addAttribute("errorMessage", "게시글 번호를 입력해주세요");
-            return "/event/admin/eventList";
+            return "event/admin/eventList";
         }
         if(bindingResult.hasErrors()){
-            return "/event/admin/eventCreate";
+            return "event/admin/eventCreate";
         }
 
         Long updatedEventId = 0L;
@@ -155,9 +155,9 @@ public class EventController {
             updatedEventId = eventService.updateEvent(id, eventFormDto, eventImgFile);
         }catch (Exception e){
             model.addAttribute("errorMessage", "이벤트 수정 중 에러가 발생하였습니다.");
-            return "redirect:/events";
+            return "redirect:events";
         }
-        return "redirect:/events/" + updatedEventId;
+        return "redirect:events/" + updatedEventId;
 
     }
 
@@ -182,7 +182,7 @@ public class EventController {
         model.addAttribute("currentPage", currentPage);
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
-        return "/event/admin/eventDetail";
+        return "event/admin/eventDetail";
     }
 
     @DeleteMapping("/admin/events/{id}")
@@ -190,7 +190,7 @@ public class EventController {
     public String deleteEvent(@PathVariable Long id, Model model){
         if(id == null) {
             model.addAttribute("errorMessage", "게시글 번호를 입력해주세요");
-            return "/event/admin/eventList";
+            return "event/admin/eventList";
         }
         eventService.deleteEvent(id);
         return id.toString();

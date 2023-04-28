@@ -5,13 +5,17 @@ plugins {
 }
 
 group = 'com.sun'
-version = '0.0.2-SNAPSHOT'
+version = '0.0.3-SNAPSHOT'
 sourceCompatibility = "17"
 
 configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
 	}
+}
+
+bootJar {
+	mainClass = 'com.sun.Azit.AzitApplication'
 }
 
 repositories {

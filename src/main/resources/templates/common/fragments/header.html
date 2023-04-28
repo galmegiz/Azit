@@ -5,7 +5,7 @@
 <div class="header header_area" th:fragment="header">
     <nav class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme" id="layout-navbar">
         <div class="container-fluid">
-            <a class="navbar-brand" href="/members/register">MyAzit</a>
+            <a class="navbar-brand" href="/events">MyAzit</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -25,9 +25,7 @@
                             <li><a class="dropdown-item" href="#">Something else here</a></li>
                         </ul>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link disabled">Disabled</a>
-                    </li>
+
                 </ul>
                 <a class="nav-link" sec:authorize="isAnonymous()" th:href="@{/members/login}">로그인</a>
                <!-- <th:block sec:authorize="isAuthenticated()">-->
