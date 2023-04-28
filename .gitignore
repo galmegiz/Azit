@@ -37,6 +37,7 @@ out/
 .vscode/
 
 application.properties
+application-prod.properties
 
 
 # Created by https://www.toptal.com/developers/gitignore/api/intellij+all,windows,macos
