@@ -3,49 +3,48 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <div class="header header_area" th:fragment="header">
-    <nav class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme" id="layout-navbar">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="/events">MyAzit</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="/events">이벤트</a>
-                    </li>
-                    <li class="nav-item dropdown" sec:authorize="hasRole('ADMIN')">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            이벤트 관리
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="/admin/events/">이벤트 현황</a></li>
-                            <li><a class="dropdown-item" href="/admin/events/form">이벤트 생성</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="#">Something else here</a></li>
-                        </ul>
-                    </li>
-
-                </ul>
-                <a class="nav-link" sec:authorize="isAnonymous()" th:href="@{/members/login}">로그인</a>
-               <!-- <th:block sec:authorize="isAuthenticated()">-->
-                <ul sec:authorize="isAuthenticated()" class="navbar-nav mb-2 mb-lg-0" >
-                    <li class="nav-item dropdown">
-                        <a th:text="${#authentication.name} + 님" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            회원정보
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" th:href="@{/members/mypage/{userEmail}(userEmail = ${#authentication.name})}">정보 변경</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="/logout">로그아웃</a></li>
-                        </ul>
-                    </li>
-                </ul>
-               <!-- </th:block>-->
-              <!--  <a class="nav-link" sec:authorize="isAuthenticated()" href="/logout">로그아웃</a>-->
-                <!--<a class="nav-link" th:text="${#authentication.name}" th:href="@{/members/mypage/{userEmail}(userEmail = ${#authentication.name})}"></a>-->
-            </div>
-        </div>
-    </nav>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light mb-5">
+    <!--<nav class="navbar navbar-expand-lg navbar-light bg-light mb-5">-->
+    <!--<nav class="navbar navbar-expand-lg navbar-light bg-light mb-5">-->
+    <div class="container-fluid">
+      <a class="navbar-brand" href="/events">MyAzit</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/events">이벤트</a>
+          </li>
+          <hr class="dropdown-divider">
+          <li class="nav-item dropdown" sec:authorize="hasRole('ADMIN')">
+            <a class="nav-link dropdown-toggle" href="javascript:void(0)" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              이벤트 관리
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <li><a class="dropdown-item" href="/admin/events/">이벤트 현황</a></li>
+              <li><a class="dropdown-item" href="/admin/events/form">이벤트 생성</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="#">Something else here</a></li>
+            </ul>
+          </li>
+        </ul>
+        <hr class="dropdown-divider">
+        <a class="nav-link" sec:authorize="isAnonymous()" th:href="@{/members/login}">로그인</a>
+        <ul sec:authorize="isAuthenticated()" class="navbar-nav mb-2 mb-lg-0" >
+          <li class="nav-item dropdown">
+            <a th:text="${#authentication.name} + 님" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              회원정보
+            </a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" th:href="@{/members/mypage/{userEmail}(userEmail = ${#authentication.name})}">정보 변경</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="/logout">로그아웃</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
 </div>
 </html>
