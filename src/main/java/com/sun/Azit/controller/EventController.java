@@ -114,10 +114,10 @@ public class EventController {
             eventService.createEvent(eventFormDto, eventImgFile);
         } catch (Exception e){
             model.addAttribute("error Message", "상품 등록 중 에러가 발생했습니다.");
-            return "/event/admin/eventCreate";
+            return "event/admin/eventCreate";
         }
 
-        return "redirect:admin/events";
+        return "redirect:/admin/events";
     }
 
     @Transactional(readOnly = true)
@@ -155,9 +155,9 @@ public class EventController {
             updatedEventId = eventService.updateEvent(id, eventFormDto, eventImgFile);
         }catch (Exception e){
             model.addAttribute("errorMessage", "이벤트 수정 중 에러가 발생하였습니다.");
-            return "redirect:events";
+            return "redirect:/events";
         }
-        return "redirect:events/" + updatedEventId;
+        return "redirect:/events/" + updatedEventId;
 
     }
 
