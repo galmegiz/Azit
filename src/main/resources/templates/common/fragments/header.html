@@ -16,7 +16,7 @@
           <li class="nav-item">
             <a class="nav-link active" aria-current="page" href="/events">이벤트</a>
           </li>
-          <hr class="dropdown-divider">
+          <hr class="dropdown-divider" sec:authorize="hasRole('ADMIN')">
           <li class="nav-item dropdown" sec:authorize="hasRole('ADMIN')">
             <a class="nav-link dropdown-toggle" href="javascript:void(0)" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
               이벤트 관리
