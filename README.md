@@ -35,15 +35,14 @@
    * Lombok
    * Spring Boot DevTools
    * H2 DB
- 
-  ## 뷰 랜더링
-   * Thymeleaf
 
   ## 프론트엔드
    * Jquery
    * Bootstrap
  
- 
+  ## 기타
+  * Thymeleaf
+  * docker
 
 # 데모사이트 이미지 *(로컬환경에 구현된 샘플 페이지입니다.)*
 <details>
