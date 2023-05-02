@@ -1,6 +1,7 @@
 package com.sun.Azit.entity;
 
-import com.sun.Azit.dto.EventImgDto;
+
+import com.sun.Azit.dto.ImgDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -45,8 +46,8 @@ public class EventImg extends BaseEntity{
     // Dto <-> Entity
     private static ModelMapper modelMapper = new ModelMapper();
 
-    public EventImgDto toDto(){
-        return modelMapper.map(this, EventImgDto.class);
+    public ImgDto toDto(){
+        return modelMapper.map(this, ImgDto.class);
     }
 
 

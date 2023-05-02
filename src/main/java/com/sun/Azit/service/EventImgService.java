@@ -1,10 +1,11 @@
 package com.sun.Azit.service;
 
-import com.sun.Azit.dto.EventImgDto;
+
+import com.sun.Azit.dto.ImgDto;
 import com.sun.Azit.entity.Event;
 import com.sun.Azit.entity.EventImg;
 import com.sun.Azit.repository.EventImgRepository;
-import com.sun.Azit.repository.EventRepository;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -13,7 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.thymeleaf.util.StringUtils;
 
 import javax.persistence.EntityNotFoundException;
-import java.io.File;
+
 
 @Service
 @RequiredArgsConstructor
@@ -42,7 +43,7 @@ public class EventImgService {
         eventImgRepository.save(eventImg);
     }
 
-    public void updateEventImg(EventImgDto eventImgDto, MultipartFile eventImgFile) throws Exception{
+    public void updateEventImg(ImgDto eventImgDto, MultipartFile eventImgFile) throws Exception{
         String oriImgName = eventImgFile.getOriginalFilename();
         String imgName = "";
         String imgUrl = "";

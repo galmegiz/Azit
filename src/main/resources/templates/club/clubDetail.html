@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layouts/defaultLayout}">
+
+<th:block layout:fragment="css">
+    <style>
+    @media (min-width: 1000px){
+    div.text-align{text-align:left!important; };
+
+    }
+    @media (max-width: 1000px){
+    div.text-align{text-align:center!important;};
+
+    }
+
+    @media (min-width:990px){
+    img.img-upcomingevent{ width: 400px;
+    height: auto;}
+    .event_desc{height:400px;}
+
+    }
+
+    @media (max-width:990px){
+    img.img-upcomingevent{ width: 400px;
+    height: auto; margin-bottom:50px;}
+
+    }
+
+    @media (max-width:500px){
+    img.img-upcomingevent{ width: 300px;
+    height: auto; margin-bottom:50px;}
+    }
+
+    .eventview{padding-bottom:30px;}
+    div.section-intro{padding-bottom: 20px;}
+
+    section.middle {border-bottom:1px solid #dbd9e6;}
+    aside.single_sidebar_widget {padding-top:20px !important;}
+    aside.single_sidebar_widget p { font-size:14px; line-height:20px; color:#888888; }
+    h4.widget_title {margin-bottom: 10px !important; color:#16a085;}
+    .sidebar_list{border-bottom: 1px solid #f0e9ff; margin-bottom:10px;}
+    .blog_right_sidebar .widget_title:after{border-bottom:0px;}
+    .blog_right_sidebar .single_sidebar_widget {background: white; margin-bottom:0px;}
+    .blog_area{margin-bottom:20px;}
+    .blog_details{padding-top:0px !important;}
+    .button:hover{background: orange; border: 1px solid white; color: white !important; }
+    .posts-list{padding-top:20px !important;}
+
+
+
+    </style>
+</th:block>
+<th:block layout:fragment="script">
+    <script>
+
+  $(document).on("click", 'a[id="apply"]', function(){
+    var id = "[[${clubFormDto.title}]]"
+    if(confirm(id + "이벤트를 신청하겠습니까?")){
+    $.ajax({
+      url: "/events/apply?eventId=" + [[${clubFormDto.id}]],
+      method: "GET",
+      dataType: "text",
+      success: function(data) {
+        alert(data);
+      }
+    });
+    }
+  });
+    </script>
+</th:block>
+
+<th:block layout:fragment="content">
+    <section class="domain-search eventview middle mt-5">
+        <div class="container">
+            <div class="section-intro text-center">
+            </div>
+            <div class="row align-items-center event_row h-container" >
+                <div class="col-lg-6 event_col">
+                    <div class="text-center">
+                        <div id="carouselExample" class="carousel slide" data-bs-ride="carousel">
+                            <ol class="carousel-indicators">
+                                <li data-bs-target="#carouselExample" data-bs-slide-to="0" class="active"></li>
+                                <th:block th:each="num : ${#numbers.sequence(1, 4)}">
+                                    <li data-bs-target="#carouselExample" data-bs-slide-to="0" class=""></li>
+                                </th:block>
+                                <div class="carousel-inner">
+                                    <div class="carousel-item active">
+                                        <img class="d-block w-100" th:src="${clubFormDto.imgDtoList.get(0).imgUrl}" alt="First slide">
+                                        <div class="carousel-caption d-none d-md-block">
+                                            <h3>First slide</h3>
+                                            <p>Eos mutat malis maluisset et, agam ancillae quo te, in vim congue pertinacia.</p>
+                                        </div>
+                                    </div>
+                                    <th:block th:each="num : ${#numbers.sequence(1, #lists.size(clubFormDto.imgDtoList) - 1)}">
+                                        <div class="carousel-item">
+                                            <img class="d-block w-100" th:src="${clubFormDto.imgDtoList.get(num).imgUrl}" alt="First slide">
+                                            <div class="carousel-caption d-none d-md-block">
+                                                <h3>First slide</h3>
+                                                <p>Eos mutat malis maluisset et, agam ancillae quo te, in vim congue pertinacia.</p>
+                                            </div>
+                                        </div>
+                                    </th:block>
+                                </div>
+                            </ol>
+                        </div>
+                        <!--<img class="img-upcomingevent" th:src="${eventFormDto.eventImgDto.imgUrl}" alt="Card image cap">-->
+                    </div>
+                </div>
+                <div class="col-lg-6 mb-6 mb-lg-0 event_col event_desc">
+                    <h2 class="mb-4">
+                        [[${clubFormDto.title}]]
+                    </h2>
+                    <input type="hidden" value="${clubFormDto.id}"  name="clubId">
+                    <p th:text="${clubFormDto.introduction}">요약</p>
+                    <p>참가 인원 : [[${clubFormDto.peopleLimit}]]명</p>
+                    <div class="text-center">
+                        <a href="" id="apply" class="btn rounded-pill btn-warning">클럽 참여하기</a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+    </div>
+    <!-- upcoming event end -->
+    </div>
+    <section class="blog_area single-post-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="blog_right_sidebar">
+                        <aside class="single_sidebar_widget post_category_widget">
+                            <div class="sidebar_list">
+                                <h4 class="widget_title">클럽장</h4>
+                                <p>
+                                    [[${clubFormDto.clubLeader.name}]]
+                                </p>
+                            </div>
+                            <div class="sidebar_list">
+                                <h4 class="widget_title">문의</h4>
+                                <p><i class='bx bx-xs bx-mail-send'></i>메일 : xxx@gmai.com</p>
+                                <p><i class="bx bx-xs bx-chat"></i>카톡채널 : 친구찾기>xx 검색>채널 추가</p>
+                            </div>
+                        </aside>
+                    </div>
+                </div>
+                <div class="col-lg-8 posts-list">
+                    <div class="single-post">
+                        <div class="blog_details">
+                            <p class="excert" th:text="${clubFormDto.content}">
+                                내용
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+    </section>
+</th:block>>
+</html>
