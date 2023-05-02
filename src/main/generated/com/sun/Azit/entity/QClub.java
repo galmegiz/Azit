@@ -24,7 +24,11 @@ public class QClub extends EntityPathBase<Club> {
 
     public final QBaseEntity _super = new QBaseEntity(this);
 
+    public final ListPath<ClubImg, QClubImg> clubImgList = this.<ClubImg, QClubImg>createList("clubImgList", ClubImg.class, QClubImg.class, PathInits.DIRECT2);
+
     public final QMember clubLeader;
+
+    public final StringPath content = createString("content");
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;

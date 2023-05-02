@@ -1,7 +1,5 @@
 package com.sun.Azit.dto;
 
-import com.sun.Azit.entity.Event;
-import com.sun.Azit.entity.EventImg;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,15 +8,18 @@ import org.modelmapper.ModelMapper;
 @Getter
 @Setter
 @NoArgsConstructor
-public class EventImgDto {
+public class ImgDto {
     private Long id;
     private String oriImgName;
     private String imgUrl;
+    private String repImgYn;
+
+
 
     private static ModelMapper modelMapper = new ModelMapper();
 
-    public static EventImgDto from(EventImg eventImg){
-        return modelMapper.map(eventImg, EventImgDto.class);
+    public static <T, U> U from(T source, Class<U> destinationType){
+        return modelMapper.map(source, destinationType);
     }
 
 }

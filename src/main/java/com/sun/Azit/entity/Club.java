@@ -5,13 +5,17 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.Fetch;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @ToString
 @Getter
 @NoArgsConstructor
+@Table(name = "club")
 public class Club extends BaseEntity{
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,14 +28,18 @@ public class Club extends BaseEntity{
 
     @Setter @Column(nullable = false) private int peopleLimit;
     @Setter @Column(nullable = false) @Lob private String introduction;
+    @Setter @Column(nullable = false) @Lob private String content;
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     @Setter
     private Cstatus cStatus;
     @Setter private String hashTag;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "member_id")
-    @Setter @Column(nullable = false) private Member clubLeader;
+    @Setter private Member clubLeader;
+
+    @OneToMany(mappedBy = "club", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<ClubImg> clubImgList = new ArrayList<>();
 
 }

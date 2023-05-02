@@ -5,8 +5,9 @@ import com.sun.Azit.constant.PaymentStatus;
 import com.sun.Azit.constant.Role;
 import com.sun.Azit.constant.SearchType;
 import com.sun.Azit.dto.EventFormDto;
-import com.sun.Azit.dto.EventImgDto;
+
 import com.sun.Azit.dto.EventMemberDto;
+import com.sun.Azit.dto.ImgDto;
 import com.sun.Azit.entity.Event;
 import com.sun.Azit.entity.EventImg;
 import com.sun.Azit.entity.EventMember;
@@ -23,8 +24,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.thymeleaf.util.StringUtils;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 @Transactional
 @RequiredArgsConstructor
@@ -41,8 +40,8 @@ public class EventService {
             EventFormDto eventDto = EventFormDto.from(event);
             EventImg eventImg = eventImgRepository.findByEvent(event)
                                                     .orElse(new EventImg("default", "default", "/images/event/default.PNG", event));
-            EventImgDto eventImgDto = eventImg.toDto();
-            eventDto.setEventImgDto(eventImgDto);
+            ImgDto imgDto = eventImg.toDto();
+            eventDto.setEventImgDto(imgDto);
             return eventDto;
         });
     }
