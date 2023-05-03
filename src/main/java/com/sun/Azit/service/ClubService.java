@@ -9,6 +9,8 @@ import com.sun.Azit.entity.ClubImg;
 import com.sun.Azit.repository.ClubRepository;
 import com.sun.Azit.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -56,7 +58,11 @@ public class ClubService {
         }
 
         ClubFormDto clubFormDto = ClubFormDto.fromEntity(club);
-        clubFormDto.setImgDtoList(clubImgDtoList);
+        clubFormDto.setClubImgList(clubImgDtoList);
         return clubFormDto;
+    }
+
+    public Page<ClubFormDto> getClubList(Pageable pageable) {
+        return clubRepository.findAll(pageable).map(ClubFormDto::fromEntity);
     }
 }

@@ -35,7 +35,7 @@ public class ClubFormDto {
     private String content;
     private Cstatus cstatus;
     private String hashTag;
-    private List<ImgDto> imgDtoList = new ArrayList<>();
+    private List<ImgDto> clubImgList = new ArrayList<>();
     //private List<Long> imgIds = new ArrayList<>();
 
     private static ModelMapper modelMapper = new ModelMapper();

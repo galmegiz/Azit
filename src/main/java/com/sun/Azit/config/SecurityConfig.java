@@ -28,7 +28,7 @@ public class SecurityConfig {
         http.csrf().disable().cors().disable()
                 .authorizeRequests(request -> request
                         .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
-                        .mvcMatchers("/images/**",  "/events/**", "/members/**", "/lorahost/**", "/sneat/**", "/img/**").permitAll()
+                        .mvcMatchers("/images/**",  "/events/**", "/members/**", "/lorahost/**", "/sneat/**", "/img/**", "/club/**").permitAll()
                         .mvcMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 ).formLogin(login -> login
