@@ -78,33 +78,52 @@
             <div class="row align-items-center event_row h-container" >
                 <div class="col-lg-6 event_col">
                     <div class="text-center">
-                        <div id="carouselExample" class="carousel slide" data-bs-ride="carousel">
+                        <div class="col-md">
+                        <div id="carouselExample" class="carousel slide carousel-dark " data-bs-ride="carousel">
                             <ol class="carousel-indicators">
-                                <li data-bs-target="#carouselExample" data-bs-slide-to="0" class="active"></li>
-                                <th:block th:each="num : ${#numbers.sequence(1, 4)}">
-                                    <li data-bs-target="#carouselExample" data-bs-slide-to="0" class=""></li>
+                                <th:block th:each="num : ${#numbers.sequence(0, 4)}">
+                                    <li data-bs-target="#carouselExample" th:data-bs-slide-to="${num}" th:class="${num == 0 ? 'active' : ''}" th:if="${not #strings.isEmpty(clubFormDto.clubImgList.get(num).imgUrl)}"></li>
                                 </th:block>
-                                <div class="carousel-inner">
-                                    <div class="carousel-item active">
-                                        <img class="d-block w-100" th:src="${clubFormDto.imgDtoList.get(0).imgUrl}" alt="First slide">
+                            </ol>
+                            <div class="carousel-inner">
+                                <th:block th:each="num : ${#numbers.sequence(0, 4)}">
+                                    <div th:class="${num == 0 ? 'carousel-item active' : 'carousel-item'}" th:if="${not #strings.isEmpty(clubFormDto.clubImgList.get(num).imgUrl)}">
+                                        <img class="img-upcomingevent" th:src="${clubFormDto.clubImgList.get(num).imgUrl}" alt="First slide">
+                                        <div class="carousel-caption d-none d-md-block">
+                                        </div>
+                                    </div>
+                                </th:block>
+                                <!--<div class="carousel-item active" th:class="${num == 0}">
+                                    <img class="img-upcomingevent" th:src="${clubFormDto.clubImgList.get(0).imgUrl}" alt="First slide">
+                                    <div class="carousel-caption d-none d-md-block">
+                                        <h3>First slide</h3>
+                                        <p>Eos mutat malis maluisset et, agam ancillae quo te, in vim congue pertinacia.</p>
+                                    </div>
+                                </div>
+                                <th:block th:each="num : ${#numbers.sequence(1, #lists.size(clubFormDto.clubImgList) - 1)}">
+                                    <th:block if="${#strings.isEmpty(clubFormDto.clubImgList.get(number).imgUrl)}">
+                                    <div class="carousel-item">
+                                        <img class="d-block w-100" th:src="${clubFormDto.clubImgList.get(num).imgUrl}" alt="First slide">
                                         <div class="carousel-caption d-none d-md-block">
                                             <h3>First slide</h3>
                                             <p>Eos mutat malis maluisset et, agam ancillae quo te, in vim congue pertinacia.</p>
                                         </div>
                                     </div>
-                                    <th:block th:each="num : ${#numbers.sequence(1, #lists.size(clubFormDto.imgDtoList) - 1)}">
-                                        <div class="carousel-item">
-                                            <img class="d-block w-100" th:src="${clubFormDto.imgDtoList.get(num).imgUrl}" alt="First slide">
-                                            <div class="carousel-caption d-none d-md-block">
-                                                <h3>First slide</h3>
-                                                <p>Eos mutat malis maluisset et, agam ancillae quo te, in vim congue pertinacia.</p>
-                                            </div>
-                                        </div>
-                                    </th:block>
-                                </div>
-                            </ol>
+                                        </th:if>
+                                </th:block>-->
+
+                            </div>
+                            <a class="carousel-control-prev" href="#carouselExample" role="button" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </a>
+                            <a class="carousel-control-next" href="#carouselExample" role="button" data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </a>
                         </div>
                         <!--<img class="img-upcomingevent" th:src="${eventFormDto.eventImgDto.imgUrl}" alt="Card image cap">-->
+                        </div>
                     </div>
                 </div>
                 <div class="col-lg-6 mb-6 mb-lg-0 event_col event_desc">

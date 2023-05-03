@@ -13,7 +13,7 @@ import javax.persistence.*;
 @Getter
 public class ClubImg {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "event_img_id")
+    @Column(name = "club_img_id")
     private long id;
 
     @Setter private String imgName;

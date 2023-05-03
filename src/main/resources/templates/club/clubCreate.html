@@ -83,6 +83,13 @@
                     <p th:if="${#fields.hasErrors('introduction')}" th:errors="*{introduction}" class="fieldError">입력값이 잘못됐습니다.</p>
                   </div>
                 </div>
+                    <div class="mb-3 row">
+                        <label th:for="content" class="col-md-2 col-form-label">내용</label>
+                        <div class="col-md-10">
+                            <input type="text" th:field="*{content}" class="form-control" id="content" placeholder="">
+                            <p th:if="${#fields.hasErrors('content')}" th:errors="*{introduction}" class="fieldError">입력값이 잘못됐습니다.</p>
+                        </div>
+                    </div>
                 <div class="mb-3 row">
                   <label th:for="hashTag" class="col-md-2 col-form-label">해시태그</label>
                   <div class="col-md-10">
@@ -90,14 +97,14 @@
                     <p th:if="${#fields.hasErrors('hashTag')}" th:errors="*{hashTag}" class="fieldError">입력값이 잘못됐습니다.</p>
                   </div>
                 </div>
-                <th:block th:if="${#lists.isEmpty(clubFormDto.imgDtoList)}">
+                <th:block th:if="${#lists.isEmpty(clubFormDto.clubImgList)}">
                     <div th:each="num: ${#numbers.sequence(1,5)}">
                         <div class="mb-3 row">
                             <label th:for="imgFile"  th:text="상품이미지 + ${num}" class="custom-file-label col-md-2 col-form-label">이미지 파일</label>
                             <div class="col-md-10">
                                 <input type="file"  class="form-control custom-file-input" name="imgFile" id="imgFile">
                                 <!--<input type="hidden" th:field="${eventFormDto.eventImgDto.id}">-->
-                                <p th:if="${#fields.hasErrors('imgDtoList')}" th:errors="*{imgDtoList}" class="fieldError">입력값이 잘못됐습니다.</p>
+                                <p th:if="${#fields.hasErrors('clubImgList')}" th:errors="*{clubImgList}" class="fieldError">입력값이 잘못됐습니다.</p>
                             </div>
                         </div>
                     </div>
