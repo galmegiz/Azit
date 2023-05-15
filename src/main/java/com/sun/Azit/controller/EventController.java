@@ -7,8 +7,10 @@ import com.sun.Azit.dto.EventFormDto;
 import com.sun.Azit.dto.EventMemberDto;
 import com.sun.Azit.dto.EventUpdateRequestDto;
 import com.sun.Azit.dto.request.EventFormRequestDto;
+import com.sun.Azit.dto.response.EventDetailResponseDto;
 import com.sun.Azit.entity.Event;
 import com.sun.Azit.entity.Member;
+import com.sun.Azit.error.exception.AuthorityException;
 import com.sun.Azit.error.validation.EventFormRequestValidator;
 import com.sun.Azit.service.EventService;
 import com.sun.Azit.service.MemberService;
@@ -42,14 +44,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class EventController {
     private final EventService eventService;
-    private final EventFormRequestValidator eventFormRequestValidator;
 
-    @InitBinder
-    public void init(WebDataBinder webDataBinder){
-        webDataBinder.addValidators(eventFormRequestValidator);
-    }
-
-    @Transactional(readOnly = true)
     @GetMapping("/events")
     public String getEventList(@PageableDefault Pageable pageableQ, Model model){
         Pageable pageable = PageRequest.of(pageableQ.getPageNumber() >= 0 ? pageableQ.getPageNumber() : 0, 6);
@@ -71,128 +66,10 @@ public class EventController {
         return "event/eventList";
     }
 
-    @Transactional(readOnly = true)
     @GetMapping("/events/{id}")
     public String getEventDetail(@PathVariable Long id, Model model){
-        try{
-            EventFormDto eventFormDto = eventService.getEventDetail(id);
-            model.addAttribute("eventFormDto", eventFormDto);
-        }catch (IllegalStateException e){
-            model.addAttribute("errorMessage", e.getMessage());
-            return "event/eventList";
-        }
+        model.addAttribute("eventFormDto", EventDetailResponseDto.from(eventService.getEventDetail(id)));
         return "event/eventDetail";
-    }
-
-    @Transactional(readOnly = true)
-    @GetMapping("/admin/events")
-    public String getAdminEventList(
-            @RequestParam(required = false)SearchType searchType,
-            @RequestParam(required = false)String searchValue,
-            @PageableDefault Pageable pageableQ, Model model){
-        Pageable pageable = PageRequest.of(pageableQ.getPageNumber() >= 0 ? pageableQ.getPageNumber() : 0, 10, Sort.by("createdAt").descending());
-        Page<EventFormDto> events = eventService.getEventLists(searchType, searchValue, pageable);
-
-        int currentPage = events.getPageable().getPageNumber();
-        int startPage = Math.max(currentPage - 2, 0);
-        int endPage;
-        if (events.getTotalPages() - 1 <= 4){
-            endPage = events.getTotalPages() - 1;
-        } else{
-            endPage = (currentPage + 2 <= 4) ? 4 : Math.min(currentPage + 2, events.getTotalPages() - 1);
-        }
-        model.addAttribute("events", events);
-        model.addAttribute("currentPage", currentPage);
-        model.addAttribute("startPage", startPage);
-        model.addAttribute("endPage", endPage);
-        return "event/admin/eventList";
-    }
-
-    @GetMapping("/admin/events/form")
-    public String getEventForm(Model model){
-        model.addAttribute("eventFormDto", new EventFormDto());
-        return "event/admin/eventCreate";
-    }
-
-    @PostMapping("/admin/events/form")
-    public String createEvent(@Validated EventFormRequestDto eventFormRequestDto,
-                              BindingResult bindingResult, Model model,
-                              @RequestParam("eventImgFile")MultipartFile eventImgFile) {
-        if (bindingResult.hasErrors()) {
-            return "event/admin/eventCreate";
-        }
-        eventService.createEvent(eventFormRequestDto.to(), eventImgFile);
-        //todo : 상품 등록 중 에러가 발생했다는 메시지와 함께 create로 돌려보내는 로직 필요
-        return "redirect:/admin/events";
-    }
-
-    @Transactional(readOnly = true)
-    @GetMapping("/admin/events/{id}/form")
-    public String getUpdateEventForm(@PathVariable Long id, Model model){
-        if(id == null){
-            model.addAttribute("errorMessage", "게시글 번호를 입력해주세요");
-            return "event/admin/eventList";
-        }
-
-        try{
-            EventFormDto eventFormDto = eventService.getEventDetail(id);
-            model.addAttribute("eventFormDto", eventFormDto);
-        }catch (IllegalStateException e){
-            model.addAttribute("errorMessage", e.getMessage());
-            return "event/admin/eventList";
-        }
-        return "event/admin/eventCreate";
-    }
-
-    @PostMapping("/admin/events/{id}")
-    public String updateEvent(@Validated @ModelAttribute("eventFormDto") EventUpdateRequestDto eventUpdateRequestDto,
-                              BindingResult bindingResult, Model model,
-                              @RequestParam("eventImgFile") MultipartFile eventImgFile){
-
-        if(bindingResult.hasErrors()){
-            return "event/admin/eventCreate";
-        }
-
-        Long eventId = eventService.updateEvent(eventUpdateRequestDto.to(), eventImgFile);
-        //todo : 이벤트 수정 중 오류 발생 시 redirect 로직 필요
-
-        return "redirect:/events/" + eventId;
-
-    }
-
-    @Transactional(readOnly = true)
-    @GetMapping("/admin/events/{id}")
-    public String searchEvent(@PathVariable Long id,
-                              @PageableDefault Pageable pageableQ,
-                              Model model){
-        Pageable pageable = PageRequest.of(pageableQ.getPageNumber() >= 0 ? pageableQ.getPageNumber() : 0, 10, Sort.by("createdAt").descending());
-        EventFormDto eventFormDto = eventService.getEventDetail(id);
-        Page<EventMemberDto> eventMemberDto = eventService.getEventMemberList(id, pageable);
-        int currentPage = eventMemberDto.getPageable().getPageNumber();
-        int startPage = Math.max(currentPage - 2, 0);
-        int endPage;
-        if (eventMemberDto.getTotalPages() - 1 <= 4){
-            endPage = eventMemberDto.getTotalPages() - 1;
-        } else{
-            endPage = (currentPage + 2 <= 4) ? 4 : Math.min(currentPage + 2, eventMemberDto.getTotalPages() - 1);
-        }
-        model.addAttribute("eventMemberDto", eventMemberDto);
-        model.addAttribute("eventFormDto", eventFormDto);
-        model.addAttribute("currentPage", currentPage);
-        model.addAttribute("startPage", startPage);
-        model.addAttribute("endPage", endPage);
-        return "event/admin/eventDetail";
-    }
-
-    @DeleteMapping("/admin/events/{id}")
-    @ResponseBody
-    public String deleteEvent(@PathVariable Long id, Model model){
-        if(id == null) {
-            model.addAttribute("errorMessage", "게시글 번호를 입력해주세요");
-            return "event/admin/eventList";
-        }
-        eventService.deleteEvent(id);
-        return id.toString();
     }
 
 
@@ -202,46 +79,37 @@ public class EventController {
         if(userDetails == null){
             return "로그인이 필요한 서비스입니다.";
         }
-        String user = userDetails.getUsername();
-        if(eventService.isPresentEventMember(user, eventId)){
-            return "이미 등록되었습니다.";
+
+        if(eventService.applyEvent(userDetails.getUsername(), eventId)){
+            return "이벤트 신청을 완료했습니다.";
+        }else{
+            return "이미 등록된 사용자입니다.";
         }
-        eventService.applyEvent(user, eventId);
-        return "이벤트 등록을 완료했습니다.";
     }
 
     @DeleteMapping("/events/cancel")
     @ResponseBody
     public String cancelEvent(@AuthenticationPrincipal UserDetails userDetails,
-                                @RequestParam("memberId") Long memberId,
-                                @RequestParam("eventId") Long eventId){
+                              @RequestParam("eventId") Long eventId){
         if(userDetails == null){
             return "로그인이 필요한 서비스입니다.";
         }
-
-        String user = userDetails.getUsername();
-        try {
-            eventService.cancelEvent(user, memberId, eventId);
-
-        }catch(IllegalAccessException e){
-            return "이벤트 취소 중 중 에러가 발생했습니다.";
+        if(eventService.cancelEvent(userDetails.getUsername(), eventId)){
+            return "이벤트를 삭제했습니다.";
+        }else{
+            return "이벤트 삭제중 오류가 발생했습니다.";
         }
 
-        return  "사용자의 이벤트 신청을 취소했습니다.";
     }
+
     @Secured("ADMIN")
     @PatchMapping("/events/payment")
     @ResponseBody
     public String updatePayment(@RequestParam("memberId") Long memberId,
                                 @RequestParam("eventId") Long eventId){
 
-        try{
-            eventService.updatePayment(memberId, eventId);
-        }catch(EntityNotFoundException e){
-            return e.getMessage();
-        }
-
-        return "회원 정보가 수정되었습니다";
+        eventService.updatePayment(memberId, eventId);
+        return "지불 정보가 수정되었습니다";
     }
 
 }

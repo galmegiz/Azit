@@ -48,7 +48,7 @@ public class EventFormDto {
     private ImgDto eventImgDto;
 
 
-    private EventFormDto(Long id, String title, String titleTag, LocalDateTime recruitDeadLine, int fee, int peopleLimit, String summary, String content, Estatus status, String hashTag, LocalDateTime startDate, LocalDateTime endDate) {
+    private EventFormDto(Long id, String title, String titleTag, LocalDateTime recruitDeadLine, int fee, int peopleLimit, String summary, String content, Estatus status, String hashTag, LocalDateTime startDate, LocalDateTime endDate, ImgDto imgDto) {
         this.id = id;
         this.title = title;
         this.titleTag = titleTag;
@@ -61,6 +61,7 @@ public class EventFormDto {
         this.hashTag = hashTag;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.eventImgDto = imgDto;
     }
 
     public static EventFormDto of(String title, String titleTag, LocalDateTime recruitDeadLine, int fee, int peopleLimit, String summary, String content, String hashTag, LocalDateTime startDate, LocalDateTime endDate) {
@@ -75,7 +76,24 @@ public class EventFormDto {
                 Estatus.OPEN_SOON,
                 hashTag,
                 startDate,
-                endDate);
+                endDate,
+                null);
+    }
+
+    public static EventFormDto of(Long id, String title, String titleTag, LocalDateTime recruitDeadLine, int fee, int peopleLimit, String summary, String content, Estatus estatus, String hashTag, LocalDateTime startDate, LocalDateTime endDate, ImgDto imgDto) {
+        return new EventFormDto(id,
+                title,
+                titleTag,
+                recruitDeadLine,
+                fee,
+                peopleLimit,
+                summary,
+                content,
+                estatus,
+                hashTag,
+                startDate,
+                endDate,
+                imgDto);
     }
 
     public static EventFormDto of(Long id, String title, String titleTag, LocalDateTime recruitDeadLine, int fee, int peopleLimit, String summary, String content, Estatus estatus, String hashTag, LocalDateTime startDate, LocalDateTime endDate) {
@@ -90,7 +108,8 @@ public class EventFormDto {
                 estatus,
                 hashTag,
                 startDate,
-                endDate);
+                endDate,
+                null);
     }
 
 
@@ -106,7 +125,8 @@ public class EventFormDto {
                event.getStatus(),
                event.getHashtag(),
                event.getStartDate(),
-               event.getEndDate());
+               event.getEndDate(),
+               null);
     }
 
 }

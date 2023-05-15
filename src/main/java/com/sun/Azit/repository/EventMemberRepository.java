@@ -18,4 +18,5 @@ public interface EventMemberRepository extends JpaRepository<EventMember, Long> 
     void deleteByMemberIdAndEventId(Long memberId, Long eventId);
 
     Optional<EventMember> findByMemberIdAndEventId(Long memberId, Long eventId);
+
 }

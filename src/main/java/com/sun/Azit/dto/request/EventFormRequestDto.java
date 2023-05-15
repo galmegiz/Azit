@@ -43,7 +43,7 @@ public class EventFormRequestDto {
     @FutureOrPresent(message = "이벤트 종료는 오늘 이후여야 합니다.")
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime endDate;
-    private ImgDto eventImgDto;
+
 
 
     protected EventFormRequestDto(String title, String titleTag, LocalDateTime recruitDeadLine, int fee, int peopleLimit, String summary, String content, String hashTag, LocalDateTime startDate, LocalDateTime endDate) {

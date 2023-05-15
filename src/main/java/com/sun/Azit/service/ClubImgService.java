@@ -3,6 +3,7 @@ package com.sun.Azit.service;
 import com.sun.Azit.entity.Club;
 import com.sun.Azit.entity.ClubImg;
 import com.sun.Azit.repository.ClubImgRepository;
+import com.sun.Azit.service.util.FileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

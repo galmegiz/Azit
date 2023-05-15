@@ -46,7 +46,7 @@ public class EventUpdateRequestDto {
     private ImgDto eventImgDto;
 
 
-    private EventUpdateRequestDto(Long id, String title, String titleTag, LocalDateTime recruitDeadLine, int fee, int peopleLimit, String summary, String content, Estatus status, String hashtag, LocalDateTime startDate, LocalDateTime endDate) {
+    private EventUpdateRequestDto(Long id, String title, String titleTag, LocalDateTime recruitDeadLine, int fee, int peopleLimit, String summary, String content, Estatus status, String hashtag, LocalDateTime startDate, LocalDateTime endDate, ImgDto eventImgDto ) {
         this.id = id;
         this.title = title;
         this.titleTag = titleTag;
@@ -59,6 +59,7 @@ public class EventUpdateRequestDto {
         this.hashtag = hashtag;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.eventImgDto = eventImgDto;
     }
 
     public static EventUpdateRequestDto from(EventFormDto eventFormDto){
@@ -74,11 +75,12 @@ public class EventUpdateRequestDto {
                 eventFormDto.getStatus(),
                 eventFormDto.getHashTag(),
                 eventFormDto.getStartDate(),
-                eventFormDto.getEndDate()
+                eventFormDto.getEndDate(),
+                eventFormDto.getEventImgDto()
         );
     }
 
-    public EventFormDto to(){
+    public EventFormDto toDto(){
         return EventFormDto.of(this.id,
                 this.title,
                 this.titleTag,
@@ -90,7 +92,8 @@ public class EventUpdateRequestDto {
                 this.status,
                 this.hashtag,
                 this.startDate,
-                this.endDate);
+                this.endDate,
+                this.eventImgDto);
     }
 
 }

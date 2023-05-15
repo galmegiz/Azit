@@ -36,8 +36,8 @@
       method: "DELETE",
       dataType: "text",
       success: function(data) {
-        alert("이벤트 " + data + "번 삭제가 완료되었습니다.")
-        location.href='/admin/events?page=' + [[${events.number}]]
+        alert(data);
+        location.href='/admin/events?page=' + [[${events.number}]];
       }
     });
     }
