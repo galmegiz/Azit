@@ -6,6 +6,7 @@ import com.sun.Azit.entity.Event;
 import com.sun.Azit.entity.EventImg;
 import com.sun.Azit.repository.EventImgRepository;
 
+import com.sun.Azit.service.util.FileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.thymeleaf.util.StringUtils;
 
 import javax.persistence.EntityNotFoundException;
+import java.io.IOException;
 
 
 @Service
@@ -26,7 +28,7 @@ public class EventImgService {
     private final EventImgRepository eventImgRepository;
     private final FileService fileService;
 
-    public void saveEventImg(Event event, MultipartFile eventImgFile) throws Exception{
+    public void saveEventImg(Event event, MultipartFile eventImgFile) throws IOException {
         String oriImgName = eventImgFile.getOriginalFilename();
         String imgName = "";
         String imgUrl = "";
@@ -43,7 +45,7 @@ public class EventImgService {
         eventImgRepository.save(eventImg);
     }
 
-    public void updateEventImg(ImgDto eventImgDto, MultipartFile eventImgFile) throws Exception{
+    public void updateEventImg(ImgDto eventImgDto, MultipartFile eventImgFile) throws Exception {
         String oriImgName = eventImgFile.getOriginalFilename();
         String imgName = "";
         String imgUrl = "";

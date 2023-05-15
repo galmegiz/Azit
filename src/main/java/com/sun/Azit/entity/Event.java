@@ -60,7 +60,7 @@ public class Event extends BaseEntity{
     }
 
     public EventFormDto toDto(){
-        return new EventFormDto(this.id,
+        return EventFormDto.of(this.id,
                 this.title,
                 this.titleTag,
                 this.recruitDeadline,

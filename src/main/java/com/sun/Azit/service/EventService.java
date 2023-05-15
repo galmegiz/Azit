@@ -12,6 +12,7 @@ import com.sun.Azit.entity.Event;
 import com.sun.Azit.entity.EventImg;
 import com.sun.Azit.entity.EventMember;
 import com.sun.Azit.entity.Member;
+import com.sun.Azit.error.exception.AuthorityException;
 import com.sun.Azit.repository.EventImgRepository;
 import com.sun.Azit.repository.EventMemberRepository;
 import com.sun.Azit.repository.EventRepository;
@@ -24,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.thymeleaf.util.StringUtils;
 
 import javax.persistence.EntityNotFoundException;
+import java.io.IOException;
 
 @Transactional
 @RequiredArgsConstructor
@@ -35,6 +37,7 @@ public class EventService {
     private final MemberService memberService;
     private final EventMemberRepository eventMemberRepository;
 
+    @Transactional(readOnly = true)
     public Page<EventFormDto> getEventLists(Pageable pageable){
         return eventRepository.findAll(pageable).map(event -> {
             EventFormDto eventDto = EventFormDto.from(event);
@@ -45,7 +48,7 @@ public class EventService {
             return eventDto;
         });
     }
-
+    @Transactional(readOnly = true)
     public Page<EventFormDto> getEventLists(SearchType searchType, String searchValue, Pageable pageable) {
         if(StringUtils.isEmptyOrWhitespace(searchValue)){
             return getEventLists(pageable);
@@ -61,7 +64,7 @@ public class EventService {
     }
 
 
-    public Event createEvent(EventFormDto eventFormDto, MultipartFile itemImg) throws Exception{
+    public Event createEvent(EventFormDto eventFormDto, MultipartFile itemImg) throws IOException {
         Event newEvent = Event.of(eventFormDto.getTitle(),
                 eventFormDto.getTitleTag(),
                 eventFormDto.getRecruitDeadline(),
@@ -77,7 +80,7 @@ public class EventService {
         eventRepository.save(newEvent);
         return newEvent;
     }
-
+    @Transactional(readOnly = true)
     public EventFormDto getEventDetail(Long id) {
         Event event = eventRepository.findById(id).orElseThrow(() -> {
             throw new EntityNotFoundException("이벤트가 존재하지 않거나 삭제되었습니다.");
@@ -90,8 +93,8 @@ public class EventService {
         return eventFormDto;
     }
 
-    public Long updateEvent(Long id, EventFormDto eventForm, MultipartFile multipartFile) throws Exception{
-        Event updateEvent = eventRepository.findById(id)
+    public Long updateEvent(EventFormDto eventForm, MultipartFile multipartFile) throws Exception {
+        Event updateEvent = eventRepository.findById(eventForm.getId())
                 .orElseThrow(() -> {
                     throw new EntityNotFoundException("이벤트가 존재하지 않거나 삭제되었습니다.");
         });
@@ -112,12 +115,15 @@ public class EventService {
     }
 
 
-    public void applyEvent(String user, Long eventId) {
+    public boolean applyEvent(String email, Long eventId) {
+        Member member = memberService.findMember(email);
+        if(isPresentEventMember(member, eventId)){
+            return false;
+        }
+
         Event event = eventRepository.findById(eventId).orElseThrow(() -> {
             throw new EntityNotFoundException("이벤트가 존재하지 않거나 삭제되었습니다.");
         });
-
-        Member member = memberService.findMember(user);
 
         EventMember eventMember = EventMember.builder()
                 .memberRole(member.getRole())
@@ -125,14 +131,14 @@ public class EventService {
                 .paymentStatus(PaymentStatus.UNPAID)
                 .member(member).build();
         eventMemberRepository.save(eventMember);
+
+        return true;
     }
-
-    public boolean isPresentEventMember(String email, Long eventId){
-        Member member = memberService.findMember(email);
-
+    @Transactional(readOnly = true)
+    public boolean isPresentEventMember(Member member, Long eventId){
         return eventMemberRepository.findByMemberAndEventId(member, eventId).isPresent();
     }
-
+    @Transactional(readOnly = true)
     public Page<EventMemberDto> getEventMemberList(Long id, Pageable pageable) {
         Event event = eventRepository.findById(id).orElseThrow(() -> {
             throw new EntityNotFoundException("이벤트가 존재하지 않습니다.");
@@ -140,16 +146,17 @@ public class EventService {
         return eventMemberRepository.findByEvent(event,pageable).map(EventMemberDto::from);
     }
 
-    public void cancelEvent(String user, Long memberId, Long eventId) throws IllegalAccessException{
-        Member member = memberService.findMember(user);
-        if(memberId != member.getId() && member.getRole() != Role.ADMIN){
-            throw new IllegalAccessException("삭제 권한이 없습니다.");
+    public boolean cancelEvent(String email, Long eventId){
+        Member member = memberService.findMember(email);
+        if(isPresentEventMember(member, eventId) || member.getRole() == Role.ADMIN){
+            eventMemberRepository.deleteByMemberIdAndEventId(member.getId(), eventId);
+            return true;
+        }else{
+            throw new AuthorityException("삭제");
         }
-
-        eventMemberRepository.deleteByMemberIdAndEventId(memberId, eventId);
     }
 
-    public void updatePayment(Long memberId, Long eventId) throws EntityNotFoundException {
+    public void updatePayment(Long memberId, Long eventId){
         EventMember eventMember = eventMemberRepository
                 .findByMemberIdAndEventId(memberId, eventId)
                 .orElseThrow(() -> {throw new EntityNotFoundException("해당 회원은 이벤트를 신청하지 않았습니다.");});
