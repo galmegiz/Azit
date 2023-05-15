@@ -26,7 +26,7 @@ public class EventImgService {
     private final EventImgRepository eventImgRepository;
     private final FileService fileService;
 
-    public void saveEventImg(Event event, MultipartFile eventImgFile) throws Exception{
+    public void saveEventImg(Event event, MultipartFile eventImgFile){
         String oriImgName = eventImgFile.getOriginalFilename();
         String imgName = "";
         String imgUrl = "";
@@ -43,7 +43,7 @@ public class EventImgService {
         eventImgRepository.save(eventImg);
     }
 
-    public void updateEventImg(ImgDto eventImgDto, MultipartFile eventImgFile) throws Exception{
+    public void updateEventImg(ImgDto eventImgDto, MultipartFile eventImgFile){
         String oriImgName = eventImgFile.getOriginalFilename();
         String imgName = "";
         String imgUrl = "";

@@ -20,6 +20,7 @@ import java.util.List;
 @ToString
 public class EventFormDto {
 
+    @NotNull
     private Long id;
     @NotBlank(message = "제목은 필수 입력 값입니다.")
     private String title;
@@ -47,7 +48,7 @@ public class EventFormDto {
     private ImgDto eventImgDto;
 
 
-    public EventFormDto(Long id, String title, String titleTag, LocalDateTime recruitDeadLine, int fee, int peopleLimit, String summary, String content, Estatus status, String hashTag, LocalDateTime startDate, LocalDateTime endDate) {
+    private EventFormDto(Long id, String title, String titleTag, LocalDateTime recruitDeadLine, int fee, int peopleLimit, String summary, String content, Estatus status, String hashTag, LocalDateTime startDate, LocalDateTime endDate) {
         this.id = id;
         this.title = title;
         this.titleTag = titleTag;
@@ -60,6 +61,36 @@ public class EventFormDto {
         this.hashTag = hashTag;
         this.startDate = startDate;
         this.endDate = endDate;
+    }
+
+    public static EventFormDto of(String title, String titleTag, LocalDateTime recruitDeadLine, int fee, int peopleLimit, String summary, String content, String hashTag, LocalDateTime startDate, LocalDateTime endDate) {
+        return new EventFormDto(null,
+                title,
+                titleTag,
+                recruitDeadLine,
+                fee,
+                peopleLimit,
+                summary,
+                content,
+                Estatus.OPEN_SOON,
+                hashTag,
+                startDate,
+                endDate);
+    }
+
+    public static EventFormDto of(Long id, String title, String titleTag, LocalDateTime recruitDeadLine, int fee, int peopleLimit, String summary, String content, Estatus estatus, String hashTag, LocalDateTime startDate, LocalDateTime endDate) {
+        return new EventFormDto(id,
+                title,
+                titleTag,
+                recruitDeadLine,
+                fee,
+                peopleLimit,
+                summary,
+                content,
+                estatus,
+                hashTag,
+                startDate,
+                endDate);
     }
 
 

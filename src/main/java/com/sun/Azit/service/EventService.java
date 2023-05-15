@@ -61,7 +61,7 @@ public class EventService {
     }
 
 
-    public Event createEvent(EventFormDto eventFormDto, MultipartFile itemImg) throws Exception{
+    public Event createEvent(EventFormDto eventFormDto, MultipartFile itemImg){
         Event newEvent = Event.of(eventFormDto.getTitle(),
                 eventFormDto.getTitleTag(),
                 eventFormDto.getRecruitDeadline(),
@@ -90,8 +90,8 @@ public class EventService {
         return eventFormDto;
     }
 
-    public Long updateEvent(Long id, EventFormDto eventForm, MultipartFile multipartFile) throws Exception{
-        Event updateEvent = eventRepository.findById(id)
+    public Long updateEvent(EventFormDto eventForm, MultipartFile multipartFile){
+        Event updateEvent = eventRepository.findById(eventForm.getId())
                 .orElseThrow(() -> {
                     throw new EntityNotFoundException("이벤트가 존재하지 않거나 삭제되었습니다.");
         });

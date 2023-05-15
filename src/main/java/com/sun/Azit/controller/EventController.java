@@ -5,8 +5,11 @@ import com.sun.Azit.constant.Role;
 import com.sun.Azit.constant.SearchType;
 import com.sun.Azit.dto.EventFormDto;
 import com.sun.Azit.dto.EventMemberDto;
+import com.sun.Azit.dto.EventUpdateRequestDto;
+import com.sun.Azit.dto.request.EventFormRequestDto;
 import com.sun.Azit.entity.Event;
 import com.sun.Azit.entity.Member;
+import com.sun.Azit.error.validation.EventFormRequestValidator;
 import com.sun.Azit.service.EventService;
 import com.sun.Azit.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +27,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.thymeleaf.util.StringUtils;
@@ -37,6 +42,12 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class EventController {
     private final EventService eventService;
+    private final EventFormRequestValidator eventFormRequestValidator;
+
+    @InitBinder
+    public void init(WebDataBinder webDataBinder){
+        webDataBinder.addValidators(eventFormRequestValidator);
+    }
 
     @Transactional(readOnly = true)
     @GetMapping("/events")
@@ -104,19 +115,14 @@ public class EventController {
     }
 
     @PostMapping("/admin/events/form")
-    public String createEvent(@Valid EventFormDto eventFormDto,
+    public String createEvent(@Validated EventFormRequestDto eventFormRequestDto,
                               BindingResult bindingResult, Model model,
                               @RequestParam("eventImgFile")MultipartFile eventImgFile) {
         if (bindingResult.hasErrors()) {
             return "event/admin/eventCreate";
         }
-        try{
-            eventService.createEvent(eventFormDto, eventImgFile);
-        } catch (Exception e){
-            model.addAttribute("error Message", "상품 등록 중 에러가 발생했습니다.");
-            return "event/admin/eventCreate";
-        }
-
+        eventService.createEvent(eventFormRequestDto.to(), eventImgFile);
+        //todo : 상품 등록 중 에러가 발생했다는 메시지와 함께 create로 돌려보내는 로직 필요
         return "redirect:/admin/events";
     }
 
@@ -139,31 +145,24 @@ public class EventController {
     }
 
     @PostMapping("/admin/events/{id}")
-    public String updateEvent(@PathVariable Long id, @Valid EventFormDto eventFormDto,
+    public String updateEvent(@Validated @ModelAttribute("eventFormDto") EventUpdateRequestDto eventUpdateRequestDto,
                               BindingResult bindingResult, Model model,
                               @RequestParam("eventImgFile") MultipartFile eventImgFile){
-        if(id == null){
-            model.addAttribute("errorMessage", "게시글 번호를 입력해주세요");
-            return "event/admin/eventList";
-        }
+
         if(bindingResult.hasErrors()){
             return "event/admin/eventCreate";
         }
 
-        Long updatedEventId = 0L;
-        try{
-            updatedEventId = eventService.updateEvent(id, eventFormDto, eventImgFile);
-        }catch (Exception e){
-            model.addAttribute("errorMessage", "이벤트 수정 중 에러가 발생하였습니다.");
-            return "redirect:/events";
-        }
-        return "redirect:/events/" + updatedEventId;
+        Long eventId = eventService.updateEvent(eventUpdateRequestDto.to(), eventImgFile);
+        //todo : 이벤트 수정 중 오류 발생 시 redirect 로직 필요
+
+        return "redirect:/events/" + eventId;
 
     }
 
     @Transactional(readOnly = true)
     @GetMapping("/admin/events/{id}")
-    public String updateEvent(@PathVariable Long id,
+    public String searchEvent(@PathVariable Long id,
                               @PageableDefault Pageable pageableQ,
                               Model model){
         Pageable pageable = PageRequest.of(pageableQ.getPageNumber() >= 0 ? pageableQ.getPageNumber() : 0, 10, Sort.by("createdAt").descending());
