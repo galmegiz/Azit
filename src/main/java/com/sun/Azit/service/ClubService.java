@@ -28,6 +28,7 @@ public class ClubService {
     private final ClubRepository clubRepository;
     private final ClubImgService clubImgService;
 
+
     public Club createClub(ClubFormDto clubFormDto, String email, List<MultipartFile> clubImg) throws Exception{
         Club newClub = clubFormDto.toEntity();
         newClub.setCStatus(Cstatus.WAITING);
@@ -45,23 +46,22 @@ public class ClubService {
     }
 
 
+    @Transactional(readOnly = true)
     public ClubFormDto getClubDetail(long id) {
         Club club = clubRepository.findById(id).orElseThrow(() -> {
-            throw new EntityNotFoundException("해당 클럽이 존재하지 않습니다.");
-        });
+                        throw new EntityNotFoundException("해당 클럽이 존재하지 않습니다.");
+                    });
 
-        List<ClubImg> clubImgList = clubImgService.getClubImg(club);
-        List<ImgDto> clubImgDtoList = new ArrayList<>();
-        for (ClubImg clubImg : clubImgList) {
-             ImgDto imgDto = ImgDto.from(clubImg, ImgDto.class);
-             clubImgDtoList.add(imgDto);
-        }
+        List<ImgDto> clubImgDtos = clubImgService.getClubImgs(club)
+                                                    .stream()
+                                                    .map(clubImg -> ImgDto.from(clubImg, ImgDto.class))
+                                                    .toList();
 
-        ClubFormDto clubFormDto = ClubFormDto.fromEntity(club);
-        clubFormDto.setClubImgList(clubImgDtoList);
+        ClubFormDto clubFormDto = ClubFormDto.fromEntityAndImg(club, clubImgDtos);
+
         return clubFormDto;
     }
-
+    @Transactional(readOnly = true)
     public Page<ClubFormDto> getClubList(Pageable pageable) {
         return clubRepository.findAll(pageable).map(ClubFormDto::fromEntity);
     }

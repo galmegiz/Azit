@@ -37,7 +37,7 @@ public class ClubImgService {
         clubImgRepository.save(newImg);
     }
 
-    public List<ClubImg> getClubImg(Club club){
+    public List<ClubImg> getClubImgs(Club club){
         return clubImgRepository.findByClub(club).orElseThrow(() -> {
                 throw new EntityNotFoundException("해당 클럽 이미지가 존재하지 않습니다.");
             }
