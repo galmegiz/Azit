@@ -1,6 +1,8 @@
-package com.sun.Azit.dto;
+package com.sun.Azit.dto.response;
 
 import com.sun.Azit.constant.Cstatus;
+import com.sun.Azit.dto.ClubFormDto;
+import com.sun.Azit.dto.ImgDto;
 import com.sun.Azit.entity.Club;
 import com.sun.Azit.entity.Member;
 import lombok.Getter;
@@ -19,12 +21,12 @@ import java.util.List;
 @Setter
 @ToString
 @NoArgsConstructor
-public class ClubFormDto {
+public class ClubDetailResponseDto {
     private Long id;
     private String title;
     private String titleTag;
     private int peopleLimit;
-    private Member clubLeader;
+    private String clubLeader;
     private String introduction;
     private String content;
     private Cstatus cstatus;
@@ -34,19 +36,9 @@ public class ClubFormDto {
 
     private static ModelMapper modelMapper = new ModelMapper();
 
-
-
-    public Club toEntity(){
-        return modelMapper.map(this, Club.class);
-    }
-
-    public static ClubFormDto fromEntity(Club club){
-        return modelMapper.map(club, ClubFormDto.class);
-    }
-
-    public static ClubFormDto fromEntityAndImg(Club club, List<ImgDto> imgDtos) {
-        ClubFormDto clubFormDto = modelMapper.map(club, ClubFormDto.class);
-        clubFormDto.setClubImgList(imgDtos);
-        return clubFormDto;
+    public static ClubDetailResponseDto fromDto(ClubFormDto clubFormDto){
+        ClubDetailResponseDto clubDetailResponseDto = modelMapper.map(clubFormDto, ClubDetailResponseDto.class);
+        clubDetailResponseDto.setClubLeader(clubFormDto.getClubLeader().getName());
+        return clubDetailResponseDto;
     }
 }
